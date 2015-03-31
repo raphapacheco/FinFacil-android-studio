@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Geral -->
+    <string name="app_name">FinFacil</string>
+    <string name="app_title">FinFacil</string>
+    <string name="action_settings">Configurações</string>
+    <string name="action_data">data atual</string>
+    <string name="text_salvar">Salvar</string>
+    <string name="text_cancelar">Cancelar</string>
+    <string name="text_deletar">Excluir</string>
+    <string name="hint_descricao">Descrição</string>
+    <string name="hint_valor">Valor</string>
+    <string name="hint_parcelas">Número de Parecelas</string>
+    <string name="hint_dia_fechamento_cartao">Selecione o dia!</string>
+    <string name="text_data">Data:</string>
+    <string name="text_moeda">R$:</string>
+    <string name="text_moeda_para_formatacao">R$: %.2f</string>
+    <string name="text_resumo">Resumo</string>
+    <string name="text_carteira">Carteira</string>
+    <string name="text_cartao">Cartão</string>
+    <string name="text_configuracao">Configurações</string>
+    <string name="text_salario">Salário</string>
+    <string name="text_dia_fechamento_cartao">Dia de fechamento da fatura:</string>
+    <string name="text_confirmacao">Confirmação</string>
+    <string name="text_sim">Sim</string>
+    <string name="text_nao">Não</string>
+    <string name="text_obrigatorio">Campo obrigatório!</string>
+    <string name="text_data_formatacao">(dd/MM)</string>
+    <string name="text_menu_opcoes">Opções</string>
+    <string name="text_credito">Crédito (entrada)</string>
+    <string name="text_debito">Débito (saída)</string>
+    <string name="text_repetir_lancamento">Repetir:</string>
+
+    <!-- Mensagens -->
+    <string name="msg_confirmar_exclusao">Confirma excluir?</string>
+    <string name="msg_lancamento_efetuado">Lançamento efetuado!</string>
+    <string name="msg_lancamento_excluido">Lançamento excluído!</string>
+
+    <!-- Tabs Labels -->
+    <string name="list_view_resumo">Resumo</string>
+    <string name="list_view_carteira">Carteira</string>
+    <string name="list_view_cartao">Cartão</string>
+
+</resources>

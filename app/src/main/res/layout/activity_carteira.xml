@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/edit_descricao_carteira"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp"
+        android:hint="@string/hint_descricao"
+        android:inputType="textCapWords|textCapSentences"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+    <EditText
+        android:id="@+id/edit_valor_carteira"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp"
+        android:hint="@string/hint_valor"
+        android:inputType="numberDecimal"
+        android:layout_below="@+id/edit_descricao_carteira"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <RadioGroup
+        android:id="@+id/radioGroup_lancamento_carteira"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/edit_valor_carteira">
+
+        <RadioButton
+            android:id="@+id/radioButton_credito_carteira"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margem_radio_button"
+            android:text="@string/text_credito"
+            android:checked="true" />
+
+        <RadioButton
+            android:id="@+id/radioButton_debito_carteira"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margem_radio_button"
+            android:text="@string/text_debito" />
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/text_repetir_carteira"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_repetir_lancamento"
+        android:textSize="@dimen/tamanho_texto"
+        android:paddingTop="8dp"
+        android:paddingLeft="8dp"
+        android:paddingBottom="6dp"
+        android:layout_below="@+id/radioGroup_lancamento_carteira"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Spinner
+        android:id="@+id/spinner_repetir_carteira"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/radioGroup_lancamento_carteira"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_toRightOf="@+id/text_repetir_carteira"
+        android:layout_toEndOf="@+id/text_repetir_carteira"
+        android:layout_alignBottom="@+id/text_repetir_carteira" />
+
+    <TextView
+        android:id="@+id/text_texto_data_carteira"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_data"
+        android:textSize="@dimen/tamanho_texto"
+        android:paddingTop="8dp"
+        android:paddingLeft="8dp"
+        android:paddingBottom="6dp"
+        android:layout_below="@+id/spinner_repetir_carteira"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@+id/spinner_repetir_carteira"
+        android:layout_toStartOf="@+id/spinner_repetir_carteira" />
+
+    <TextView
+        android:id="@+id/text_data_carteira"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Campo para data"
+        android:textSize="@dimen/tamanho_texto"
+        android:paddingTop="8dp"
+        android:paddingLeft="8dp"
+        android:paddingBottom="6dp"
+        android:layout_below="@+id/spinner_repetir_carteira"
+        android:layout_toRightOf="@+id/text_texto_data_carteira"
+        android:layout_toEndOf="@+id/text_texto_data_carteira" />
+
+</RelativeLayout>

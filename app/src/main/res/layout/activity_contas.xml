@@ -1,0 +1,88 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentTop="false"
+        android:layout_above="@+id/activity_contas"
+        android:id="@+id/linearLayout">
+
+        <TabHost
+            android:id="@android:id/tabhost"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
+
+                <TabWidget
+                    android:id="@android:id/tabs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <FrameLayout
+                    android:id="@android:id/tabcontent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <ListView
+                        android:id="@+id/list_view_resumo"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <ListView
+                        android:id="@+id/list_view_carteira"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <ListView
+                        android:id="@+id/list_view_cartao"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                </FrameLayout>
+
+            </LinearLayout>
+
+        </TabHost>
+
+    </LinearLayout>
+
+    <LinearLayout android:id="@+id/activity_contas"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true" >
+
+        <TextView
+            android:id="@+id/activity_contas_total"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="15dp"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:background="?colorPrimary" />
+
+    </LinearLayout>
+
+    <com.getbase.floatingactionbutton.AddFloatingActionButton
+        android:id="@+id/botao_adicionar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        fab:fab_plusIconColor="@color/white"
+        fab:fab_colorNormal="@color/laranja_500"
+        fab:fab_colorPressed="@color/laranja_700"
+        fab:fab_size="normal"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="16dp" />
+
+</RelativeLayout>

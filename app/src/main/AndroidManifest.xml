@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="br.com.backapp.finfacil" >
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name=".activity.ContasActivity"
+            android:label="@string/app_name"
+            android:icon="@mipmap/ic_launcher">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    <activity
+        android:name=".activity.ResumoActivity"
+        android:label="@string/text_resumo" >
+    </activity>
+    <activity
+        android:name=".activity.CarteiraActivity"
+        android:label="@string/text_carteira">
+    </activity>
+    <activity
+        android:name=".activity.CartaoActivity"
+        android:label="@string/text_cartao">
+    </activity>
+    <activity
+        android:name=".activity.ConfiguracaoActivity"
+        android:label="@string/text_configuracao">
+    </activity>
+    </application>
+
+</manifest>

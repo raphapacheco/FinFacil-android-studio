@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/action_deletar"
+        android:title="@string/text_deletar"
+        android:hint="@string/text_deletar"
+        android:icon="@drawable/ic_action_discard"
+        app:showAsAction="always" />
+
+    <item android:id="@+id/action_salvar"
+        android:title="@string/text_salvar"
+        android:hint="@string/text_salvar"
+        android:icon="@drawable/ic_action_save"
+        app:showAsAction="always" />
+
+</menu>

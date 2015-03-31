@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:top="@dimen/aba_tamanho_borda_retirada_selecionada"
+        android:left="@dimen/aba_tamanho_borda_retirada_selecionada"
+        android:right="@dimen/aba_tamanho_borda_retirada_selecionada">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/primary" />
+            <stroke
+                android:color="@color/laranja_500"
+                android:width="@dimen/aba_tamanho_borda_inferior_sem_foco" />
+        </shape>
+    </item>
+</layer-list>

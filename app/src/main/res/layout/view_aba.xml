@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/tab_bar"
+    android:weightSum="1">
+
+    <TextView
+        android:id="@+id/view_aba_titulo"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|center_horizontal"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/white"
+        android:padding="15dp"
+        android:textSize="16sp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>
