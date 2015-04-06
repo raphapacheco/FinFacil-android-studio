@@ -82,7 +82,7 @@ public class ResumoListViewAdapter extends BaseAdapter {
         if (resumos.get(position).getId() < 0) {
             mViewHolder.textViewLineDescricao.setTypeface(null, Typeface.BOLD);
             mViewHolder.textViewLineValor.setTypeface(null, Typeface.BOLD);
-            mViewHolder.textViewLineData.setVisibility(View.GONE);
+            mViewHolder.textViewLineData.setVisibility(View.INVISIBLE);
         }
 
         //Positivo verde

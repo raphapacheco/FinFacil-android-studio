@@ -143,6 +143,14 @@ public class Recursos {
         return Recursos.converterDataParaStringFormatoCurtoBD(calendar.getTime());
     }
 
+    public static String primeiraDataAnterior(){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(getDataAtual());
+        calendar.set(calendar.MONTH, calendar.get(calendar.MONTH)- 1);
+        calendar.set(Calendar.DAY_OF_MONTH,  calendar.getActualMinimum(calendar.DATE));
+        return Recursos.converterDataParaStringFormatoCurtoBD(calendar.getTime());
+    }
+
     public static String primeiraDataMesSeguinte(){
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(getDataAtual());
@@ -151,7 +159,12 @@ public class Recursos {
         return Recursos.converterDataParaStringFormatoCurtoBD(calendar.getTime());
     }
 
-    public static String[] whereBetweenDataAtual(){
+    public static String[] whereBetweenMesAtual(){
         return new String[] {primeiraDataMesAtual(), primeiraDataMesSeguinte()};
     }
+
+    public static String[] whereMesAtual(){
+        return new String[] {primeiraDataMesAtual()};
+    }
+
 }

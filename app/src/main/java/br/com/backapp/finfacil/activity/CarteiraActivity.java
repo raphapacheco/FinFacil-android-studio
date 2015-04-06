@@ -158,12 +158,15 @@ public class CarteiraActivity extends ActionBarActivity {
 
     private void salvar(){
         if (validarCampos()) {
+            int numeroParcelas = 1;
+            numeroParcelas += (int) spinnerRepetir.getSelectedItemId();
+
             Double valor = Double.valueOf(editValor.getText().toString());
 
             if (radioButtonDebito.isChecked())
                 valor = valor * -1;
 
-            carteira.setDescricao(editDescricao.getText().toString());
+            carteira.setDescricao(editDescricao.getText().toString() + (numeroParcelas == 1 ? "": " (1/" + String.valueOf(numeroParcelas) + ")"));
             carteira.setValor(valor);
             carteira.setData(Recursos.converterDataParaStringBD(dataLancamento));
 
@@ -177,10 +180,10 @@ public class CarteiraActivity extends ActionBarActivity {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(dataLancamento);
 
-            for (int i = 0; i < spinnerRepetir.getSelectedItemId(); i++) {
+            for (int i = 2; i <= numeroParcelas; i++) {
                 calendar.set(calendar.MONTH, calendar.get(calendar.MONTH)+ 1);
                 carteira = new Carteira();
-                carteira.setDescricao(editDescricao.getText().toString());
+                carteira.setDescricao(editDescricao.getText().toString() + " (" + String.valueOf(i) + "/" + String.valueOf(numeroParcelas) + ")");
                 carteira.setValor(valor);
                 carteira.setData(Recursos.converterDataParaStringBD(calendar.getTime()));
 

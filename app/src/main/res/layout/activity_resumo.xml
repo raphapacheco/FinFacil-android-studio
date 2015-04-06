@@ -10,7 +10,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginRight="5dp"
         android:hint="@string/hint_descricao"
-        android:inputType="textCapWords|textCapSentences"
+        android:inputType="textCapSentences"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -33,19 +33,19 @@
         android:layout_below="@+id/edit_valor_resumo">
 
         <RadioButton
-            android:id="@+id/radioButton_credito_resumo"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margem_radio_button"
-            android:text="@string/text_credito"
-            android:checked="true" />
-
-        <RadioButton
             android:id="@+id/radioButton_debito_resumo"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margem_radio_button"
-            android:text="@string/text_debito" />
+            android:text="@string/text_debito"
+            android:checked="true" />
+
+        <RadioButton
+            android:id="@+id/radioButton_credito_resumo"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margem_radio_button"
+            android:text="@string/text_credito" />
     </RadioGroup>
 
     <TextView

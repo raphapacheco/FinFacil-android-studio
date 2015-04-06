@@ -3,7 +3,6 @@ package br.com.backapp.finfacil.activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -58,9 +57,10 @@ public class ContasActivity extends ActionBarActivity {
     private ArrayList<Carteira> carteiras;
     private ArrayList<Cartao> cartaos;
     private String abaSelecionada;
-    private Double totalResumo = 0.0;
-    private Double totalCarteira = 0.0;
-    private Double totalCartao = 0.0;
+    private double totalResumo = 0;
+    private double totalCarteira = 0;
+    private double totalCartao = 0;
+    private double totalCarteiraAnterior = 0;
     private Integer posicaoItemSelecionado = -1;
     private MenuItem menuData;
 
@@ -170,7 +170,7 @@ public class ContasActivity extends ActionBarActivity {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        //Se for negativo quer dizer que é um totalizador da aba de resumo, logo, não mostra o menu
+        //Se for negativo quer dizer que é um totalizador, logo, não mostra o menu
         if (posicaoItemSelecionado >= 0) {
             menu.setHeaderTitle(R.string.text_menu_opcoes);
             menu.add(0, v.getId(), 0, R.string.text_deletar);
@@ -234,9 +234,11 @@ public class ContasActivity extends ActionBarActivity {
         totalResumo = resumoDAO.obterTotalResumo();
         carteiras = carteiraDAO.obterTodosNaDataAtual();
         totalCarteira = carteiraDAO.obterTotalCarteira();
+        totalCarteiraAnterior = carteiraDAO.obterTotalCarteiraAnterior();
         cartaos = cartaoDAO.obterTodosNaDataAtual();
         totalCartao = cartaoDAO.obterTotalCartao();
 
+        totalCarteira += totalCarteiraAnterior;
         totalResumo += totalCarteira - totalCartao;
 
         Resumo resumoCarteira = new Resumo();
@@ -244,22 +246,27 @@ public class ContasActivity extends ActionBarActivity {
         resumoCarteira.setDescricao(this.getResources().getString(R.string.text_carteira));
         resumoCarteira.setValor(totalCarteira);
         resumoCarteira.setData(Recursos.dataAtualString());
+        resumos.add(0, resumoCarteira);
 
         Resumo resumoCartao = new Resumo();
         resumoCartao.setId(-2);
         resumoCartao.setDescricao(this.getResources().getString(R.string.text_cartao));
         resumoCartao.setValor(totalCartao * -1);
         resumoCartao.setData(Recursos.dataAtualString());
-
-        resumos.add(0, resumoCarteira);
         resumos.add(1, resumoCartao);
+
+        Carteira saldoCarteiraAnterior = new Carteira();
+        saldoCarteiraAnterior.setId(-1);
+        saldoCarteiraAnterior.setDescricao(this.getResources().getString(R.string.text_saldo_anterior));
+        saldoCarteiraAnterior.setValor(totalCarteiraAnterior);
+        saldoCarteiraAnterior.setData(Recursos.dataAtualString());
+        carteiras.add(0, saldoCarteiraAnterior);
     }
 
     private void configurarActionBar() {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle(R.string.app_title);
         actionBar.setIcon(R.mipmap.ic_launcher);
-
     }
 
     private void configurarTabs() {
@@ -346,9 +353,11 @@ public class ContasActivity extends ActionBarActivity {
                 ListAdapter adapter = ContasActivity.this.listViewCarteira.getAdapter();
                 Carteira carteira = (Carteira) adapter.getItem(position);
 
-                Intent intent = new Intent(ContasActivity.this, CarteiraActivity.class);
-                intent.putExtra(CarteiraActivity.PARAMETRO_CARTEIRA_ID, carteira.getId());
-                startActivityForResult(intent, 1);
+                if (carteira.getId() > 0) {
+                    Intent intent = new Intent(ContasActivity.this, CarteiraActivity.class);
+                    intent.putExtra(CarteiraActivity.PARAMETRO_CARTEIRA_ID, carteira.getId());
+                    startActivityForResult(intent, 1);
+                }
             }
         });
 
@@ -367,6 +376,7 @@ public class ContasActivity extends ActionBarActivity {
         this.listViewResumo.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
            @Override
            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+               //negativo não mostra o context menu
                if (position < 2)
                    posicaoItemSelecionado = -1;
                else
@@ -378,7 +388,11 @@ public class ContasActivity extends ActionBarActivity {
         this.listViewCarteira.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
-                posicaoItemSelecionado = position;
+                //negativo não mostra o context menu
+                if (position < 1)
+                    posicaoItemSelecionado = -1;
+                else
+                    posicaoItemSelecionado = position;
                 return false;
             }
         });

@@ -10,7 +10,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginRight="5dp"
         android:hint="@string/hint_descricao"
-        android:inputType="textCapWords|textCapSentences"
+        android:inputType="textCapSentences"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 

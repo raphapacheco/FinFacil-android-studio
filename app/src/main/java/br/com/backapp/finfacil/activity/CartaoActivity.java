@@ -149,7 +149,10 @@ public class CartaoActivity extends ActionBarActivity {
 
     private void salvar(){
         if (validarCampos()) {
-            cartao.setDescricao(editDescricao.getText().toString());
+            int numeroParcelas = 1;
+            numeroParcelas += (int) spinnerRepetir.getSelectedItemId();
+
+            cartao.setDescricao(editDescricao.getText().toString() + (numeroParcelas == 1 ? "": " (1/" + String.valueOf(numeroParcelas) + ")"));
             cartao.setValor(Double.valueOf(editValor.getText().toString()));
             cartao.setParcela("1");
             cartao.setData(Recursos.converterDataParaStringBD(dataLancamento));
@@ -164,10 +167,10 @@ public class CartaoActivity extends ActionBarActivity {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(dataLancamento);
 
-            for (int i = 0; i < spinnerRepetir.getSelectedItemId(); i++) {
+            for (int i = 2; i <= numeroParcelas; i++) {
                 calendar.set(calendar.MONTH, calendar.get(calendar.MONTH)+ 1);
                 cartao = new Cartao();
-                cartao.setDescricao(editDescricao.getText().toString());
+                cartao.setDescricao(editDescricao.getText().toString() + " (" + String.valueOf(i) + "/" + String.valueOf(numeroParcelas) + ")");
                 cartao.setValor(Double.valueOf(editValor.getText().toString()));
                 cartao.setData(Recursos.converterDataParaStringBD(calendar.getTime()));
 

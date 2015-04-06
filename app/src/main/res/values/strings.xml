@@ -30,6 +30,7 @@
     <string name="text_credito">Crédito (entrada)</string>
     <string name="text_debito">Débito (saída)</string>
     <string name="text_repetir_lancamento">Repetir:</string>
+    <string name="text_saldo_anterior">Mês anterior</string>
 
     <!-- Mensagens -->
     <string name="msg_confirmar_exclusao">Confirma excluir?</string>

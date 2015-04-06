@@ -5,8 +5,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
 import br.com.backapp.finfacil.model.Resumo;
 import br.com.backapp.finfacil.resources.Recursos;
@@ -58,7 +56,7 @@ public class ResumoDAO {
 
     public ArrayList<Resumo> obterTodosNaDataAtual() {
         ArrayList<Resumo> lancamentos = new ArrayList<Resumo>();
-        Cursor cursor = this.database.query(NOME_DA_TABELA, null, "data BETWEEN ? and ?", Recursos.whereBetweenDataAtual(), null, null, "data");
+        Cursor cursor = this.database.query(NOME_DA_TABELA, null, "data BETWEEN ? and ?", Recursos.whereBetweenMesAtual(), null, null, "data");
         cursor.moveToFirst();
 
         for (int i = 0; i < cursor.getCount(); i++) {
@@ -93,7 +91,7 @@ public class ResumoDAO {
 
     public double obterTotalResumo(){
         double valor = 0;
-        Cursor cursor = this.database.rawQuery("SELECT SUM(valor) FROM " + NOME_DA_TABELA + " WHERE data between ? and ?", Recursos.whereBetweenDataAtual());
+        Cursor cursor = this.database.rawQuery("SELECT SUM(valor) FROM " + NOME_DA_TABELA + " WHERE data between ? and ?", Recursos.whereBetweenMesAtual());
 
         if (cursor != null) {
             if (cursor.moveToFirst()) {

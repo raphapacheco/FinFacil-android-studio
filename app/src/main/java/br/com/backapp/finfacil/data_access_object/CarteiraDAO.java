@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 import br.com.backapp.finfacil.model.Carteira;
 import br.com.backapp.finfacil.resources.Recursos;
@@ -57,7 +56,7 @@ public class CarteiraDAO {
 
     public ArrayList<Carteira> obterTodosNaDataAtual() {
         ArrayList<Carteira> lancamentos = new ArrayList<Carteira>();
-        Cursor cursor = this.database.query(NOME_DA_TABELA, null, "data BETWEEN ? and ?", Recursos.whereBetweenDataAtual(), null, null, "data");
+        Cursor cursor = this.database.query(NOME_DA_TABELA, null, "data BETWEEN ? and ?", Recursos.whereBetweenMesAtual(), null, null, "data");
         cursor.moveToFirst();
 
         for (int i = 0; i < cursor.getCount(); i++) {
@@ -92,7 +91,21 @@ public class CarteiraDAO {
 
     public double obterTotalCarteira(){
         double valor = 0;
-        Cursor cursor = this.database.rawQuery("SELECT SUM(valor) FROM " + NOME_DA_TABELA + " WHERE data between ? and ?", Recursos.whereBetweenDataAtual());
+        Cursor cursor = this.database.rawQuery("SELECT SUM(valor) FROM " + NOME_DA_TABELA + " WHERE data between ? and ?", Recursos.whereBetweenMesAtual());
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                valor = cursor.getDouble(0);
+            }
+            cursor.close();
+        }
+
+        return valor;
+    }
+
+    public double obterTotalCarteiraAnterior(){
+        double valor = 0;
+        Cursor cursor = this.database.rawQuery("SELECT SUM(valor) FROM " + NOME_DA_TABELA + " WHERE data < ?", Recursos.whereMesAtual());
 
         if (cursor != null) {
             if (cursor.moveToFirst()) {

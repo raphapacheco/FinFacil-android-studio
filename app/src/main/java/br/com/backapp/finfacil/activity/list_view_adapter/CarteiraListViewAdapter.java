@@ -1,6 +1,7 @@
 package br.com.backapp.finfacil.activity.list_view_adapter;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,6 +73,17 @@ public class CarteiraListViewAdapter extends BaseAdapter {
 
         String textMoeda = context.getResources().getString(R.string.text_moeda_para_formatacao);
         mViewHolder.textViewLineValor.setText(String.format(textMoeda, carteiras.get(position).getValor()));
+
+        mViewHolder.textViewLineDescricao.setTypeface(null, Typeface.NORMAL);
+        mViewHolder.textViewLineValor.setTypeface(null, Typeface.NORMAL);
+        mViewHolder.textViewLineData.setVisibility(View.VISIBLE);
+
+        //Id < 0 quer dizer que é um totalizador
+        if (carteiras.get(position).getId() < 0) {
+            mViewHolder.textViewLineDescricao.setTypeface(null, Typeface.BOLD);
+            mViewHolder.textViewLineValor.setTypeface(null, Typeface.BOLD);
+            mViewHolder.textViewLineData.setVisibility(View.INVISIBLE);
+        }
 
         //Positivo verde
         if (carteiras.get(position).getValor() >= 0)

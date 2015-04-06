@@ -159,12 +159,15 @@ public class ResumoActivity extends ActionBarActivity {
 
     private void salvar(){
         if (validarCampos()) {
+            int numeroParcelas = 1;
+            numeroParcelas += (int) spinnerRepetir.getSelectedItemId();
+
             Double valor = Double.valueOf(editValor.getText().toString());
 
             if (radioButtonDebito.isChecked())
                 valor = valor * -1;
 
-            resumo.setDescricao(editDescricao.getText().toString());
+            resumo.setDescricao(editDescricao.getText().toString() + (numeroParcelas == 1 ? "": " (1/" + String.valueOf(numeroParcelas) + ")"));
             resumo.setValor(valor);
             resumo.setData(Recursos.converterDataParaStringBD(dataLancamento));
 
@@ -178,10 +181,10 @@ public class ResumoActivity extends ActionBarActivity {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(dataLancamento);
 
-            for (int i = 0; i < spinnerRepetir.getSelectedItemId(); i++) {
+            for (int i = 2; i <= numeroParcelas; i++) {
                 calendar.set(calendar.MONTH, calendar.get(calendar.MONTH)+ 1);
                 resumo = new Resumo();
-                resumo.setDescricao(editDescricao.getText().toString());
+                resumo.setDescricao(editDescricao.getText().toString() + " (" + String.valueOf(i) + "/" + String.valueOf(numeroParcelas) + ")");
                 resumo.setValor(valor);
                 resumo.setData(Recursos.converterDataParaStringBD(calendar.getTime()));
 
