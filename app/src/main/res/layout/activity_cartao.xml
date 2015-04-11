@@ -27,10 +27,10 @@
         android:layout_alignParentStart="true" />
 
     <TextView
-        android:id="@+id/text_repetir_cartao"
+        android:id="@+id/text_categoria_cartao"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/text_repetir_lancamento"
+        android:text="@string/text_categoria"
         android:textSize="@dimen/tamanho_texto"
         android:paddingTop="8dp"
         android:paddingLeft="8dp"
@@ -40,10 +40,36 @@
         android:layout_alignParentStart="true" />
 
     <Spinner
-        android:id="@+id/spinner_repetir_cartao"
+        android:id="@+id/spinner_categoria_cartao"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/edit_valor_cartao"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_toRightOf="@+id/text_categoria_cartao"
+        android:layout_toEndOf="@+id/text_categoria_cartao"
+        android:layout_alignBottom="@+id/text_categoria_cartao"/>
+
+    <TextView
+        android:id="@+id/text_repetir_cartao"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_repetir_lancamento"
+        android:textSize="@dimen/tamanho_texto"
+        android:paddingTop="8dp"
+        android:paddingLeft="8dp"
+        android:paddingBottom="6dp"
+        android:layout_below="@+id/text_categoria_cartao"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@+id/spinner_categoria_cartao"
+        android:layout_toStartOf="@+id/spinner_categoria_cartao" />
+
+    <Spinner
+        android:id="@+id/spinner_repetir_cartao"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_categoria_cartao"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_toRightOf="@+id/text_repetir_cartao"
@@ -59,11 +85,11 @@
         android:paddingTop="8dp"
         android:paddingLeft="8dp"
         android:paddingBottom="6dp"
-        android:layout_below="@+id/spinner_repetir_cartao"
+        android:layout_below="@+id/text_repetir_cartao"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_toLeftOf="@+id/spinner_repetir_cartao"
-        android:layout_toStartOf="@+id/spinner_repetir_cartao" />
+        android:layout_toStartOf="@+id/spinner_repetir_cartao"
+        android:layout_toLeftOf="@+id/spinner_repetir_cartao" />
 
     <TextView
         android:id="@+id/text_data_cartao"

@@ -21,9 +21,11 @@ import java.util.Calendar;
 import java.util.Date;
 
 import br.com.backapp.finfacil.R;
+import br.com.backapp.finfacil.activity.spinner_adapter.CategoriaSpinnerAdapter;
 import br.com.backapp.finfacil.data_access_object.CartaoDAO;
 import br.com.backapp.finfacil.database.DatabaseHelper;
 import br.com.backapp.finfacil.model.Cartao;
+import br.com.backapp.finfacil.model.Categoria;
 import br.com.backapp.finfacil.resources.Recursos;
 
 /**
@@ -38,6 +40,7 @@ public class CartaoActivity extends ActionBarActivity {
     private EditText editDescricao;
     private EditText editValor;
     private Spinner spinnerRepetir;
+    private Spinner spinnerCategoria;
     private TextView textData;
     private Date dataLancamento;
     private Context context;
@@ -85,6 +88,9 @@ public class CartaoActivity extends ActionBarActivity {
                 datePicker.show();
             }
         });
+
+        this.spinnerCategoria = (Spinner) findViewById(R.id.spinner_categoria_cartao);
+        spinnerCategoria.setAdapter(Recursos.adapterCategoria(context, base));
     }
 
     @Override
@@ -143,6 +149,7 @@ public class CartaoActivity extends ActionBarActivity {
                 editValor.setText(Recursos.converterDoubleParaString(cartao.getValor()));
                 dataLancamento = Recursos.converterStringParaData(cartao.getData());
                 textData.setText(Recursos.converterDataParaStringFormatoCurto(dataLancamento));
+                spinnerCategoria.setSelection((((CategoriaSpinnerAdapter) spinnerCategoria.getAdapter()).getPositioById(cartao.getCategoria_id())));
             }
         }
     }
@@ -156,6 +163,7 @@ public class CartaoActivity extends ActionBarActivity {
             cartao.setValor(Double.valueOf(editValor.getText().toString()));
             cartao.setParcela("1");
             cartao.setData(Recursos.converterDataParaStringBD(dataLancamento));
+            cartao.setCategoria_id(((Categoria) spinnerCategoria.getSelectedItem()).getId());
 
             CartaoDAO cartaoDAO = new CartaoDAO(base);
 
@@ -173,6 +181,7 @@ public class CartaoActivity extends ActionBarActivity {
                 cartao.setDescricao(editDescricao.getText().toString() + " (" + String.valueOf(i) + "/" + String.valueOf(numeroParcelas) + ")");
                 cartao.setValor(Double.valueOf(editValor.getText().toString()));
                 cartao.setData(Recursos.converterDataParaStringBD(calendar.getTime()));
+                cartao.setCategoria_id(((Categoria) spinnerCategoria.getSelectedItem()).getId());
 
                 cartaoDAO.inserir(cartao);
             }

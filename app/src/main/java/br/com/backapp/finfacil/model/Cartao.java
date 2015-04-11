@@ -1,7 +1,5 @@
 package br.com.backapp.finfacil.model;
 
-import java.util.Date;
-
 /**
  * Created by raphael on 20/02/2015.
  */
@@ -11,7 +9,7 @@ public class Cartao {
     private double valor;
     private String data;
     private String parcela;
-
+    private long categoria_id;
 
     public long getId() {
         return id;
@@ -52,4 +50,13 @@ public class Cartao {
     public void setParcela(String parcela) {
         this.parcela = parcela;
     }
+
+    public long getCategoria_id() {
+        return categoria_id;
+    }
+
+    public void setCategoria_id(long categoria_id) {
+        this.categoria_id = categoria_id;
+    }
+
 }

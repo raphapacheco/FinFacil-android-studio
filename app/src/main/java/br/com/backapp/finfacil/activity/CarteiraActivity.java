@@ -11,6 +11,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -22,9 +24,11 @@ import java.util.Calendar;
 import java.util.Date;
 
 import br.com.backapp.finfacil.R;
+import br.com.backapp.finfacil.activity.spinner_adapter.CategoriaSpinnerAdapter;
 import br.com.backapp.finfacil.data_access_object.CarteiraDAO;
 import br.com.backapp.finfacil.database.DatabaseHelper;
 import br.com.backapp.finfacil.model.Carteira;
+import br.com.backapp.finfacil.model.Categoria;
 import br.com.backapp.finfacil.resources.Recursos;
 
 /**
@@ -38,10 +42,12 @@ public class CarteiraActivity extends ActionBarActivity {
     private long carteiraIdSelecionado;
     private EditText editDescricao;
     private EditText editValor;
-    private RadioButton radioButtonDebito;
+    private RadioButton radioButtonCredito;
     private Spinner spinnerRepetir;
+    private Spinner spinnerCategoria;
     private TextView textData;
     private Date dataLancamento;
+    private CheckBox checkPrevisao;
     private Context context;
 
     @Override
@@ -64,7 +70,7 @@ public class CarteiraActivity extends ActionBarActivity {
         this.editValor = (EditText) findViewById(R.id.edit_valor_carteira);
         this.editDescricao.requestFocus();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-        this.radioButtonDebito = (RadioButton) findViewById(R.id.radioButton_debito_carteira);
+        this.radioButtonCredito = (RadioButton) findViewById(R.id.radioButton_credito_carteira);
         this.spinnerRepetir = (Spinner) findViewById(R.id.spinner_repetir_carteira);
         this.spinnerRepetir.setAdapter(Recursos.adapterTextoRepetirLancamento(this));
         this.textData = (TextView) findViewById(R.id.text_data_carteira);
@@ -88,6 +94,10 @@ public class CarteiraActivity extends ActionBarActivity {
                 datePicker.show();
             }
         });
+
+        this.spinnerCategoria = (Spinner) findViewById(R.id.spinner_categoria_carteira);
+        spinnerCategoria.setAdapter(Recursos.adapterCategoria(context, base));
+        this.checkPrevisao = (CheckBox) findViewById(R.id.check_previsao_carteira);
     }
 
     @Override
@@ -145,9 +155,11 @@ public class CarteiraActivity extends ActionBarActivity {
             if (carteira != null){
                 editDescricao.setText(carteira.getDescricao());
                 editValor.setText(Recursos.converterDoubleParaString(Math.abs(carteira.getValor())));
-                radioButtonDebito.setChecked(carteira.getValor() < 0);
+                radioButtonCredito.setChecked(carteira.getValor() >= 0);
                 dataLancamento = Recursos.converterStringParaData(carteira.getData());
                 textData.setText(Recursos.converterDataParaStringFormatoCurto(dataLancamento));
+                spinnerCategoria.setSelection((((CategoriaSpinnerAdapter) spinnerCategoria.getAdapter()).getPositioById(carteira.getCategoria_id())));
+                checkPrevisao.setChecked(carteira.isPrevisao());
             }
         }
     }
@@ -163,12 +175,14 @@ public class CarteiraActivity extends ActionBarActivity {
 
             Double valor = Double.valueOf(editValor.getText().toString());
 
-            if (radioButtonDebito.isChecked())
+            if (!radioButtonCredito.isChecked())
                 valor = valor * -1;
 
             carteira.setDescricao(editDescricao.getText().toString() + (numeroParcelas == 1 ? "": " (1/" + String.valueOf(numeroParcelas) + ")"));
             carteira.setValor(valor);
             carteira.setData(Recursos.converterDataParaStringBD(dataLancamento));
+            carteira.setCategoria_id(((Categoria) spinnerCategoria.getSelectedItem()).getId());
+            carteira.setPrevisao(checkPrevisao.isChecked());
 
             CarteiraDAO carteiraDAO = new CarteiraDAO(base);
 
@@ -186,6 +200,8 @@ public class CarteiraActivity extends ActionBarActivity {
                 carteira.setDescricao(editDescricao.getText().toString() + " (" + String.valueOf(i) + "/" + String.valueOf(numeroParcelas) + ")");
                 carteira.setValor(valor);
                 carteira.setData(Recursos.converterDataParaStringBD(calendar.getTime()));
+                carteira.setCategoria_id(((Categoria) spinnerCategoria.getSelectedItem()).getId());
+                carteira.setPrevisao(checkPrevisao.isChecked());
 
                 carteiraDAO.inserir(carteira);
             }

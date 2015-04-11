@@ -14,20 +14,12 @@ import br.com.backapp.finfacil.resources.Recursos;
  */
 public class CartaoDAO {
     public static String NOME_DA_TABELA = "cartao";
-    public static String CREATE_SCRIPT = " CREATE TABLE " + NOME_DA_TABELA
-            + " ("
-            + "    _id INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + "   descricao TEXT,"
-            + "   valor REAL,"
-            + "   parcela TEXT,"
-            + "   data TEXT"
-            + " )";
-    public static String DROP_SCRIPT = "DROP TABLE IF EXISTS " + NOME_DA_TABELA;
     private int COLUNA_ID = 0;
     private int COLUNA_DESCRICAO = 1;
     private int COLUNA_VALOR = 2;
     private int COLUNA_PARCELA = 3;
     private int COLUNA_DATA = 4;
+    private int COLUNA_CATEGORIA = 5;
     private SQLiteDatabase database;
 
     public CartaoDAO(SQLiteDatabase database) {
@@ -40,6 +32,7 @@ public class CartaoDAO {
         valores.put("valor", cartao.getValor());
         valores.put("data", cartao.getData());
         valores.put("parcela", cartao.getParcela());
+        valores.put("categoria_id", cartao.getCategoria_id());
 
         this.database.insert(NOME_DA_TABELA, null, valores);
     }
@@ -50,6 +43,7 @@ public class CartaoDAO {
         valores.put("valor", cartao.getValor());
         valores.put("data", cartao.getData());
         valores.put("parcela", cartao.getParcela());
+        valores.put("categoria_id", cartao.getCategoria_id());
 
         this.database.update(NOME_DA_TABELA, valores, "_id = ?", new String[]{""+cartao.getId()});
     }
@@ -70,6 +64,7 @@ public class CartaoDAO {
             cartao.setValor(cursor.getDouble(COLUNA_VALOR));
             cartao.setParcela(cursor.getString(COLUNA_PARCELA));
             cartao.setData(cursor.getString(COLUNA_DATA));
+            cartao.setCategoria_id(cursor.getLong(COLUNA_CATEGORIA));
             lancamentos.add(cartao);
             cursor.moveToNext();
         }
@@ -89,6 +84,7 @@ public class CartaoDAO {
             cartao.setValor(cursor.getDouble(COLUNA_VALOR));
             cartao.setParcela(cursor.getString(COLUNA_PARCELA));
             cartao.setData(cursor.getString(COLUNA_DATA));
+            cartao.setCategoria_id(cursor.getLong(COLUNA_CATEGORIA));
         }
         cursor.close();
 

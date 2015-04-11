@@ -1,0 +1,1 @@
+ALTER TABLE carteira ADD COLUMN previsao INTEGER DEFAULT 0

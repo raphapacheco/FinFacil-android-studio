@@ -69,7 +69,7 @@ public class CarteiraListViewAdapter extends BaseAdapter {
             mViewHolder = (ViewHolder) convertView.getTag();
         }
 
-        mViewHolder.textViewLineDescricao.setText(carteiras.get(position).getDescricao());
+        mViewHolder.textViewLineDescricao.setText((carteiras.get(position).isPrevisao() ? "(P)  " : "") + carteiras.get(position).getDescricao());
 
         String textMoeda = context.getResources().getString(R.string.text_moeda_para_formatacao);
         mViewHolder.textViewLineValor.setText(String.format(textMoeda, carteiras.get(position).getValor()));
@@ -84,6 +84,9 @@ public class CarteiraListViewAdapter extends BaseAdapter {
             mViewHolder.textViewLineValor.setTypeface(null, Typeface.BOLD);
             mViewHolder.textViewLineData.setVisibility(View.INVISIBLE);
         }
+
+        if (carteiras.get(position).isPrevisao())
+            mViewHolder.textViewLineDescricao.setTextColor(context.getResources().getColor(R.color.text_previsao));
 
         //Positivo verde
         if (carteiras.get(position).getValor() >= 0)

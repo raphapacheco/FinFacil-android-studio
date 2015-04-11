@@ -7,7 +7,7 @@
     <string name="action_data">data atual</string>
     <string name="text_salvar">Salvar</string>
     <string name="text_cancelar">Cancelar</string>
-    <string name="text_deletar">Excluir</string>
+
     <string name="hint_descricao">Descrição</string>
     <string name="hint_valor">Valor</string>
     <string name="hint_parcelas">Número de Parecelas</string>
@@ -26,16 +26,29 @@
     <string name="text_nao">Não</string>
     <string name="text_obrigatorio">Campo obrigatório!</string>
     <string name="text_data_formatacao">(dd/MM)</string>
-    <string name="text_menu_opcoes">Opções</string>
+
     <string name="text_credito">Crédito (entrada)</string>
     <string name="text_debito">Débito (saída)</string>
-    <string name="text_repetir_lancamento">Repetir:</string>
+    <string name="text_repetir_lancamento">Lançar:</string>
     <string name="text_saldo_anterior">Mês anterior</string>
+    <string name="text_categoria">Categoria:</string>
+    <string name="text_sem_categoria">Sem categoria</string>
+    <string name="text_previsao">Lançamento previsto</string>
+
+    <string name="text_total_previsao">Previsão:</string>
+    <string name="text_total">Total:</string>
+
+    <string name="text_menu_opcoes">Opções</string>
+    <string name="text_deletar">Excluir</string>
+    <string name="text_efetivar">Efetivar</string>
 
     <!-- Mensagens -->
     <string name="msg_confirmar_exclusao">Confirma excluir?</string>
+    <string name="msg_confirmar_efetivar">Confirma efetivar?</string>
     <string name="msg_lancamento_efetuado">Lançamento efetuado!</string>
     <string name="msg_lancamento_excluido">Lançamento excluído!</string>
+    <string name="msg_lancamento_efetivado">Lançamento efetivado!</string>
+
 
     <!-- Tabs Labels -->
     <string name="list_view_resumo">Resumo</string>

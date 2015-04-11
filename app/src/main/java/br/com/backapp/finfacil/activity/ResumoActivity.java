@@ -11,6 +11,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -22,8 +24,10 @@ import java.util.Calendar;
 import java.util.Date;
 
 import br.com.backapp.finfacil.R;
+import br.com.backapp.finfacil.activity.spinner_adapter.CategoriaSpinnerAdapter;
 import br.com.backapp.finfacil.data_access_object.ResumoDAO;
 import br.com.backapp.finfacil.database.DatabaseHelper;
+import br.com.backapp.finfacil.model.Categoria;
 import br.com.backapp.finfacil.model.Resumo;
 import br.com.backapp.finfacil.resources.Recursos;
 
@@ -39,9 +43,11 @@ public class ResumoActivity extends ActionBarActivity {
     private long resumoIdSelecionado;
     private EditText editDescricao;
     private EditText editValor;
-    private RadioButton radioButtonDebito;
+    private RadioButton radioButtonCredito;
     private Spinner spinnerRepetir;
+    private Spinner spinnerCategoria;
     private TextView textData;
+    private CheckBox checkPrevisao;
     private Date dataLancamento;
     private Context context;
 
@@ -65,7 +71,7 @@ public class ResumoActivity extends ActionBarActivity {
         this.editValor = (EditText) findViewById(R.id.edit_valor_resumo);
         this.editDescricao.requestFocus();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-        this.radioButtonDebito = (RadioButton) findViewById(R.id.radioButton_debito_resumo);
+        this.radioButtonCredito = (RadioButton) findViewById(R.id.radioButton_credito_resumo);
         this.spinnerRepetir = (Spinner) findViewById(R.id.spinner_repetir_resumo);
         this.spinnerRepetir.setAdapter(Recursos.adapterTextoRepetirLancamento(this));
         this.textData = (TextView) findViewById(R.id.text_data_resumo);
@@ -89,6 +95,10 @@ public class ResumoActivity extends ActionBarActivity {
                 datePicker.show();
             }
         });
+
+        this.spinnerCategoria = (Spinner) findViewById(R.id.spinner_categoria_resumo);
+        spinnerCategoria.setAdapter(Recursos.adapterCategoria(context, base));
+        this.checkPrevisao = (CheckBox) findViewById(R.id.check_previsao_resumo);
     }
 
     @Override
@@ -146,9 +156,11 @@ public class ResumoActivity extends ActionBarActivity {
             if (resumo != null){
                 editDescricao.setText(resumo.getDescricao());
                 editValor.setText(Recursos.converterDoubleParaString(Math.abs(resumo.getValor())));
-                radioButtonDebito.setChecked(resumo.getValor() < 0);
+                radioButtonCredito.setChecked(resumo.getValor() >= 0);
                 dataLancamento = Recursos.converterStringParaData(resumo.getData());
                 textData.setText(Recursos.converterDataParaStringFormatoCurto(dataLancamento));
+                spinnerCategoria.setSelection(((CategoriaSpinnerAdapter) spinnerCategoria.getAdapter()).getPositioById(resumo.getCategoria_id()));
+                checkPrevisao.setChecked(resumo.isPrevisao());
             }
         }
     }
@@ -164,12 +176,14 @@ public class ResumoActivity extends ActionBarActivity {
 
             Double valor = Double.valueOf(editValor.getText().toString());
 
-            if (radioButtonDebito.isChecked())
+            if (!radioButtonCredito.isChecked())
                 valor = valor * -1;
 
             resumo.setDescricao(editDescricao.getText().toString() + (numeroParcelas == 1 ? "": " (1/" + String.valueOf(numeroParcelas) + ")"));
             resumo.setValor(valor);
             resumo.setData(Recursos.converterDataParaStringBD(dataLancamento));
+            resumo.setCategoria_id(((Categoria) spinnerCategoria.getSelectedItem()).getId());
+            resumo.setPrevisao(checkPrevisao.isChecked());
 
             ResumoDAO resumoDAO = new ResumoDAO(base);
 
@@ -187,6 +201,8 @@ public class ResumoActivity extends ActionBarActivity {
                 resumo.setDescricao(editDescricao.getText().toString() + " (" + String.valueOf(i) + "/" + String.valueOf(numeroParcelas) + ")");
                 resumo.setValor(valor);
                 resumo.setData(Recursos.converterDataParaStringBD(calendar.getTime()));
+                resumo.setCategoria_id(((Categoria) spinnerCategoria.getSelectedItem()).getId());
+                resumo.setPrevisao(checkPrevisao.isChecked());
 
                 resumoDAO.inserir(resumo);
             }

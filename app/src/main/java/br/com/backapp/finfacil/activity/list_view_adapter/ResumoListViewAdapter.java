@@ -69,7 +69,7 @@ public class ResumoListViewAdapter extends BaseAdapter {
             mViewHolder = (ViewHolder) convertView.getTag();
         }
 
-        mViewHolder.textViewLineDescricao.setText(resumos.get(position).getDescricao());
+        mViewHolder.textViewLineDescricao.setText((resumos.get(position).isPrevisao() ? "(P)  " : "") + resumos.get(position).getDescricao());
 
         String textMoeda = context.getResources().getString(R.string.text_moeda_para_formatacao);
         mViewHolder.textViewLineValor.setText(String.format(textMoeda, resumos.get(position).getValor()));
@@ -84,6 +84,9 @@ public class ResumoListViewAdapter extends BaseAdapter {
             mViewHolder.textViewLineValor.setTypeface(null, Typeface.BOLD);
             mViewHolder.textViewLineData.setVisibility(View.INVISIBLE);
         }
+
+        if (resumos.get(position).isPrevisao())
+            mViewHolder.textViewLineDescricao.setTextColor(context.getResources().getColor(R.color.text_previsao));
 
         //Positivo verde
         if (resumos.get(position).getValor() >= 0)

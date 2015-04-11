@@ -3,12 +3,14 @@ package br.com.backapp.finfacil.resources;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.sqlite.SQLiteDatabase;
 import android.text.InputFilter;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -16,12 +18,17 @@ import java.util.Locale;
 import android.widget.SpinnerAdapter;
 
 import br.com.backapp.finfacil.R;
+import br.com.backapp.finfacil.activity.spinner_adapter.CategoriaSpinnerAdapter;
+import br.com.backapp.finfacil.data_access_object.CategoriaDAO;
+import br.com.backapp.finfacil.model.Categoria;
 
 /**
  * Created by raphael on 20/02/2015.
  */
 public class Recursos {
     private static Date dataAtual;
+    private static ArrayList<String> listaCategorias;
+    private static ArrayList<Categoria> categorias;
 
     public static Date converterStringParaData(String dateString){
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
@@ -117,10 +124,26 @@ public class Recursos {
     }
 
     public static SpinnerAdapter adapterTextoRepetirLancamento(Context context){
-        String[] textoRepetir = {"Nunca", /*"Sempre",*/ "1 vez", "2 vezes", "3 vezes", "4 vezes", "5 vezes", "6 vezes", "7 vezes",
+        String[] textoRepetir = {"1 vez", "2 vezes", "3 vezes", "4 vezes", "5 vezes", "6 vezes", "7 vezes",
                                  "8 vezes", "9 vezes", "10 vezes", "11 vezes", "12 vezes"};
 
         SpinnerAdapter adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, textoRepetir);
+
+        return  adapter;
+    }
+
+    public static SpinnerAdapter adapterTextoCategoria(Context context, SQLiteDatabase database){
+        if (listaCategorias == null) {
+            listaCategorias = new ArrayList<String>();
+            CategoriaDAO categoriaDAO = new CategoriaDAO(database);
+            ArrayList<Categoria> categorias = categoriaDAO.obterTodos();
+
+            listaCategorias.add(context.getResources().getString(R.string.text_sem_categoria));
+            for (int i = 0; i < categorias.size(); i++) {
+                listaCategorias.add(categorias.get(i).getDescricao());
+            }
+        }
+        SpinnerAdapter adapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, listaCategorias);
 
         return  adapter;
     }
@@ -167,4 +190,19 @@ public class Recursos {
         return new String[] {primeiraDataMesAtual()};
     }
 
+    public static CategoriaSpinnerAdapter adapterCategoria(Context context, SQLiteDatabase database){
+        if (categorias == null) {
+            CategoriaDAO categoriaDAO = new CategoriaDAO(database);
+            categorias = categoriaDAO.obterTodos();
+
+            Categoria categoria = new Categoria();
+            categoria.setId(-1);
+            categoria.setDescricao(context.getResources().getString(R.string.text_sem_categoria));
+            categorias.add(0, categoria);
+        }
+
+        CategoriaSpinnerAdapter categoriaSpinnerAdapter = new CategoriaSpinnerAdapter(context, android.R.layout.simple_spinner_dropdown_item, categorias);
+
+        return  categoriaSpinnerAdapter;
+    }
 }

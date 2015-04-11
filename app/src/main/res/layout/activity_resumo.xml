@@ -48,6 +48,39 @@
             android:text="@string/text_credito" />
     </RadioGroup>
 
+    <CheckBox
+        android:id="@+id/check_previsao_resumo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/text_previsao"
+        android:layout_below="@+id/radioGroup_lancamento_resumo"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/text_categoria_resumo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_categoria"
+        android:textSize="@dimen/tamanho_texto"
+        android:paddingTop="8dp"
+        android:paddingLeft="8dp"
+        android:paddingBottom="6dp"
+        android:layout_below="@+id/check_previsao_resumo"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Spinner
+        android:id="@+id/spinner_categoria_resumo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/check_previsao_resumo"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_toRightOf="@+id/text_categoria_resumo"
+        android:layout_toEndOf="@+id/text_categoria_resumo"
+        android:layout_alignBottom="@+id/text_categoria_resumo"/>
+
     <TextView
         android:id="@+id/text_repetir_resumo"
         android:layout_width="wrap_content"
@@ -57,15 +90,17 @@
         android:paddingTop="8dp"
         android:paddingLeft="8dp"
         android:paddingBottom="6dp"
-        android:layout_below="@+id/radioGroup_lancamento_resumo"
+        android:layout_below="@+id/text_categoria_resumo"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_toLeftOf="@+id/spinner_categoria_resumo"
+        android:layout_toStartOf="@+id/spinner_categoria_resumo" />
 
     <Spinner
         android:id="@+id/spinner_repetir_resumo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/radioGroup_lancamento_resumo"
+        android:layout_below="@+id/spinner_categoria_resumo"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_toRightOf="@+id/text_repetir_resumo"
@@ -84,20 +119,22 @@
         android:layout_below="@+id/text_repetir_resumo"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_toLeftOf="@+id/spinner_repetir_resumo"
-        android:layout_toStartOf="@+id/spinner_repetir_resumo" />
+        android:layout_toStartOf="@+id/spinner_repetir_resumo"
+        android:layout_toLeftOf="@+id/spinner_repetir_resumo" />
 
     <TextView
         android:id="@+id/text_data_resumo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Campo para data"
-        android:textSize="@dimen/tamanho_texto"
+        android:textSize="18sp"
         android:paddingTop="8dp"
         android:paddingLeft="8dp"
         android:paddingBottom="6dp"
         android:layout_below="@+id/spinner_repetir_resumo"
         android:layout_toRightOf="@+id/text_texto_data_resumo"
         android:layout_toEndOf="@+id/text_texto_data_resumo" />
-    
+
+
+
 </RelativeLayout>

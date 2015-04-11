@@ -58,11 +58,18 @@ public class ContasActivity extends ActionBarActivity {
     private ArrayList<Cartao> cartaos;
     private String abaSelecionada;
     private double totalResumo = 0;
+    private double totalResumoPrevisto = 0;
     private double totalCarteira = 0;
+    private double totalCarteiraPrevisto = 0;
     private double totalCartao = 0;
     private double totalCarteiraAnterior = 0;
+    private double totalCarteiraPrevistoAnterior = 0;
     private Integer posicaoItemSelecionado = -1;
     private MenuItem menuData;
+    private Resumo resumoSelecionado;
+    private Carteira carteiraSelecionado;
+    private Cartao cartaoSelecionado;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,8 +179,11 @@ public class ContasActivity extends ActionBarActivity {
         super.onCreateContextMenu(menu, v, menuInfo);
         //Se for negativo quer dizer que é um totalizador, logo, não mostra o menu
         if (posicaoItemSelecionado >= 0) {
-            menu.setHeaderTitle(R.string.text_menu_opcoes);
             menu.add(0, v.getId(), 0, R.string.text_deletar);
+
+            if ((abaSelecionada.equals(ABA_RESUMO_NOME) && resumoSelecionado.isPrevisao()) ||
+                (abaSelecionada.equals(ABA_CARTEIRA_NOME) && carteiraSelecionado.isPrevisao()))
+                menu.add(0, v.getId(), 0, R.string.text_efetivar);
         }
     }
 
@@ -184,9 +194,7 @@ public class ContasActivity extends ActionBarActivity {
                 Recursos.confirmar(this, getResources().getString(R.string.msg_confirmar_exclusao), new Runnable() {
                     @Override
                     public void run() {
-                        ListAdapter adapter = ContasActivity.this.listViewResumo.getAdapter();
-                        Resumo resumo = (Resumo) adapter.getItem(posicaoItemSelecionado);
-                        resumoDAO.deletar(resumo);
+                        resumoDAO.deletar(resumoSelecionado);
                         atualizarContas();
                         Toast.makeText(getApplicationContext(), R.string.msg_lancamento_excluido, Toast.LENGTH_SHORT).show();
                     }
@@ -197,9 +205,7 @@ public class ContasActivity extends ActionBarActivity {
                 Recursos.confirmar(this, getResources().getString(R.string.msg_confirmar_exclusao), new Runnable() {
                     @Override
                     public void run() {
-                        ListAdapter adapter = ContasActivity.this.listViewCarteira.getAdapter();
-                        Carteira carteira = (Carteira) adapter.getItem(posicaoItemSelecionado);
-                        carteiraDAO.deletar(carteira);
+                        carteiraDAO.deletar(carteiraSelecionado);
                         atualizarContas();
                         Toast.makeText(getApplicationContext(), R.string.msg_lancamento_excluido, Toast.LENGTH_SHORT).show();
                     }
@@ -210,11 +216,35 @@ public class ContasActivity extends ActionBarActivity {
                 Recursos.confirmar(this, getResources().getString(R.string.msg_confirmar_exclusao), new Runnable() {
                     @Override
                     public void run() {
-                        ListAdapter adapter = ContasActivity.this.listViewCartao.getAdapter();
-                        Cartao cartao = (Cartao) adapter.getItem(posicaoItemSelecionado);
-                        cartaoDAO.deletar(cartao);
+                        cartaoDAO.deletar(cartaoSelecionado);
                         atualizarContas();
                         Toast.makeText(getApplicationContext(), R.string.msg_lancamento_excluido, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }
+
+        if(item.getTitle()==getResources().getString(R.string.text_efetivar)){
+            if (abaSelecionada.equals(ABA_RESUMO_NOME)){
+                Recursos.confirmar(this, getResources().getString(R.string.msg_confirmar_efetivar), new Runnable() {
+                    @Override
+                    public void run() {
+                        resumoSelecionado.setPrevisao(false);
+                        resumoDAO.atualizar(resumoSelecionado);
+                        atualizarContas();
+                        Toast.makeText(getApplicationContext(), R.string.msg_lancamento_efetivado, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            if (abaSelecionada.equals(ABA_CARTEIRA_NOME)) {
+                Recursos.confirmar(this, getResources().getString(R.string.msg_confirmar_efetivar), new Runnable() {
+                    @Override
+                    public void run() {
+                        carteiraSelecionado.setPrevisao(false);
+                        carteiraDAO.atualizar(carteiraSelecionado);
+                        atualizarContas();
+                        Toast.makeText(getApplicationContext(), R.string.msg_lancamento_efetivado, Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -232,14 +262,20 @@ public class ContasActivity extends ActionBarActivity {
     private void carregarContasSelecionadas() {
         resumos = resumoDAO.obterTodosNaDataAtual();
         totalResumo = resumoDAO.obterTotalResumo();
+        totalResumoPrevisto = resumoDAO.obterTotalResumoPrevisto();
         carteiras = carteiraDAO.obterTodosNaDataAtual();
         totalCarteira = carteiraDAO.obterTotalCarteira();
+        totalCarteiraPrevisto = carteiraDAO.obterTotalCarteiraPrevisto();
         totalCarteiraAnterior = carteiraDAO.obterTotalCarteiraAnterior();
+        totalCarteiraPrevistoAnterior = carteiraDAO.obterTotalCarteiraPrevistoAnterior();
         cartaos = cartaoDAO.obterTodosNaDataAtual();
         totalCartao = cartaoDAO.obterTotalCartao();
 
         totalCarteira += totalCarteiraAnterior;
         totalResumo += totalCarteira - totalCartao;
+
+        totalCarteiraPrevisto += totalCarteiraPrevistoAnterior;
+        totalResumoPrevisto += totalCarteiraPrevisto - totalCartao;
 
         Resumo resumoCarteira = new Resumo();
         resumoCarteira.setId(-1);
@@ -377,10 +413,14 @@ public class ContasActivity extends ActionBarActivity {
            @Override
            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
                //negativo não mostra o context menu
-               if (position < 2)
+               if (position < 2) {
+                   resumoSelecionado = null;
                    posicaoItemSelecionado = -1;
-               else
+               }
+               else{
+                   resumoSelecionado = (Resumo) ContasActivity.this.listViewResumo.getAdapter().getItem(position);
                    posicaoItemSelecionado = position;
+               }
                return false;
            }
         });
@@ -389,10 +429,14 @@ public class ContasActivity extends ActionBarActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
                 //negativo não mostra o context menu
-                if (position < 1)
+                if (position < 1) {
+                    carteiraSelecionado = null;
                     posicaoItemSelecionado = -1;
-                else
+                }
+                else {
+                    carteiraSelecionado = (Carteira) ContasActivity.this.listViewCarteira.getAdapter().getItem(position);
                     posicaoItemSelecionado = position;
+                }
                 return false;
             }
         });
@@ -400,6 +444,7 @@ public class ContasActivity extends ActionBarActivity {
         this.listViewCartao.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+                cartaoSelecionado = (Cartao) ContasActivity.this.listViewCartao.getAdapter().getItem(position);
                 posicaoItemSelecionado = position;
                 return false;
             }
@@ -433,21 +478,42 @@ public class ContasActivity extends ActionBarActivity {
     }
 
     public void preencherTotal() {
-        String textMoeda = context.getResources().getString(R.string.text_moeda_para_formatacao);
+        String textMoeda = getResources().getString(R.string.text_moeda_para_formatacao);
+        String textoTotal = getResources().getString(R.string.text_total);
+        String textoTotalPrevisto = getResources().getString(R.string.text_total_previsao);
+
         TextView textTotal = (TextView) findViewById(R.id.activity_contas_total);
+        TextView textTotalPrevisto = (TextView) findViewById(R.id.activity_contas_total_previsto);
 
         double total = 0;
-        if (abaSelecionada.equals(ABA_RESUMO_NOME))
+        double previsto = 0;
+        if (abaSelecionada.equals(ABA_RESUMO_NOME)) {
             total = totalResumo;
+            previsto = totalResumoPrevisto;
+        }
 
-        if (abaSelecionada.equals(ABA_CARTEIRA_NOME))
+        if (abaSelecionada.equals(ABA_CARTEIRA_NOME)) {
             total = totalCarteira;
+            previsto = totalCarteiraPrevisto;
+        }
 
-        if (abaSelecionada.equals(ABA_CARTAO_NOME))
+        if (abaSelecionada.equals(ABA_CARTAO_NOME)){
             total = totalCartao;
+            previsto = totalCartao;
+        }
 
-        textTotal.setText(String.format(textMoeda, total));
+        textTotal.setText(textoTotal + " " + String.format(textMoeda, total));
         textTotal.setTypeface(null, Typeface.BOLD);
+
+        textTotalPrevisto.setText(textoTotalPrevisto + " " + String.format(textMoeda, previsto));
+        textTotalPrevisto.setTypeface(null, Typeface.BOLD);
+
+        textTotalPrevisto.setVisibility(View.VISIBLE);
+
+        if (previsto == 0 || total == previsto)
+            textTotalPrevisto.setVisibility(View.GONE);
+
         textTotal.setBackgroundColor(total < 0 ? getResources().getColor(R.color.theme_red_primary) : getResources().getColor(R.color.primary));
+        textTotalPrevisto.setBackgroundColor(previsto < 0 ? getResources().getColor(R.color.theme_red_primary) : getResources().getColor(R.color.primary));
     }
 }

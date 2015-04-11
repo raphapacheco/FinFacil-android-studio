@@ -1,0 +1,5 @@
+CREATE TABLE categoria
+(
+    _id INTEGER PRIMARY KEY AUTOINCREMENT,
+    descricao TEXT
+)

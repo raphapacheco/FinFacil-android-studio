@@ -18,7 +18,7 @@ import br.com.backapp.finfacil.data_access_object.ResumoDAO;
  */
 public class DatabaseHelper extends SQLiteOpenHelper{
     private static final String NOME_DO_BANCO_DE_DADOS = "fin_facil.db";
-    private static int VERSAO_DO_BANCO_DE_DADOS = 2;
+    private static int VERSAO_DO_BANCO_DE_DADOS = 3;
     private Context context;
 
     public DatabaseHelper(Context context) {
@@ -28,9 +28,11 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(ResumoDAO.CREATE_SCRIPT);
-        db.execSQL(CarteiraDAO.CREATE_SCRIPT);
-        db.execSQL(CartaoDAO.CREATE_SCRIPT);
+        db.execSQL(lerArquivoSql(R.raw.criacao_tabela_categoria));
+        db.execSQL(lerArquivoSql(R.raw.criacao_tabela_resumo));
+        db.execSQL(lerArquivoSql(R.raw.criacao_tabela_carteira));
+        db.execSQL(lerArquivoSql(R.raw.criacao_tabela_cartao));
+        db.execSQL(lerArquivoSql(R.raw.valores_padroes_categoria));
     }
 
     @Override
@@ -39,6 +41,16 @@ public class DatabaseHelper extends SQLiteOpenHelper{
             db.execSQL(lerArquivoSql(R.raw.ajuste_data_resumo));
             db.execSQL(lerArquivoSql(R.raw.ajuste_data_carteira));
             db.execSQL(lerArquivoSql(R.raw.ajuste_data_cartao));
+        }
+
+        if (oldVersion < 3){
+            db.execSQL(lerArquivoSql(R.raw.criacao_tabela_categoria));
+            db.execSQL(lerArquivoSql(R.raw.valores_padroes_categoria));
+            db.execSQL(lerArquivoSql(R.raw.criacao_campo_categoria_resumo));
+            db.execSQL(lerArquivoSql(R.raw.criacao_campo_categoria_carteira));
+            db.execSQL(lerArquivoSql(R.raw.criacao_campo_categoria_cartao));
+            db.execSQL(lerArquivoSql(R.raw.criacao_campo_previsao_resumo));
+            db.execSQL(lerArquivoSql(R.raw.criacao_campo_previsao_carteira));
         }
     }
 

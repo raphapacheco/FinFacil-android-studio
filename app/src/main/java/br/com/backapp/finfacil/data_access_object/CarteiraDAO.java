@@ -14,18 +14,12 @@ import br.com.backapp.finfacil.resources.Recursos;
  */
 public class CarteiraDAO {
     public static String NOME_DA_TABELA = "carteira";
-    public static String CREATE_SCRIPT = " CREATE TABLE " + NOME_DA_TABELA
-            + " ("
-            + "    _id INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + "   descricao TEXT,"
-            + "   valor REAL,"
-            + "   data TEXT"
-            + " )";
-    public static String DROP_SCRIPT = "DROP TABLE IF EXISTS " + NOME_DA_TABELA;
     private int COLUNA_ID = 0;
     private int COLUNA_DESCRICAO = 1;
     private int COLUNA_VALOR = 2;
     private int COLUNA_DATA = 3;
+    private int COLUNA_CATEGORIA = 4;
+    private int COLUNA_PREVISAO = 5;
     private SQLiteDatabase database;
 
     public CarteiraDAO(SQLiteDatabase database) {
@@ -37,6 +31,8 @@ public class CarteiraDAO {
         valores.put("descricao", carteira.getDescricao());
         valores.put("valor", carteira.getValor());
         valores.put("data", carteira.getData());
+        valores.put("categoria_id", carteira.getCategoria_id());
+        valores.put("previsao", carteira.isPrevisao());
 
         this.database.insert(NOME_DA_TABELA, null, valores);
     }
@@ -46,6 +42,8 @@ public class CarteiraDAO {
         valores.put("descricao", carteira.getDescricao());
         valores.put("valor", carteira.getValor());
         valores.put("data", carteira.getData());
+        valores.put("categoria_id", carteira.getCategoria_id());
+        valores.put("previsao", carteira.isPrevisao());
 
         this.database.update(NOME_DA_TABELA, valores, "_id = ?", new String[]{""+carteira.getId()});
     }
@@ -65,6 +63,8 @@ public class CarteiraDAO {
             carteira.setDescricao(cursor.getString(COLUNA_DESCRICAO));
             carteira.setValor(cursor.getDouble(COLUNA_VALOR));
             carteira.setData(cursor.getString(COLUNA_DATA));
+            carteira.setCategoria_id(cursor.getLong(COLUNA_CATEGORIA));
+            carteira.setPrevisao(cursor.getInt(COLUNA_PREVISAO) == 1);
             lancamentos.add(carteira);
             cursor.moveToNext();
         }
@@ -83,6 +83,8 @@ public class CarteiraDAO {
             carteira.setDescricao(cursor.getString(COLUNA_DESCRICAO));
             carteira.setValor(cursor.getDouble(COLUNA_VALOR));
             carteira.setData(cursor.getString(COLUNA_DATA));
+            carteira.setCategoria_id(cursor.getLong(COLUNA_CATEGORIA));
+            carteira.setPrevisao(cursor.getInt(COLUNA_PREVISAO) == 1);
         }
         cursor.close();
 
@@ -91,7 +93,7 @@ public class CarteiraDAO {
 
     public double obterTotalCarteira(){
         double valor = 0;
-        Cursor cursor = this.database.rawQuery("SELECT SUM(valor) FROM " + NOME_DA_TABELA + " WHERE data between ? and ?", Recursos.whereBetweenMesAtual());
+        Cursor cursor = this.database.rawQuery("SELECT SUM(valor) FROM " + NOME_DA_TABELA + " WHERE (data between ? and ?) and (previsao = 0)", Recursos.whereBetweenMesAtual());
 
         if (cursor != null) {
             if (cursor.moveToFirst()) {
@@ -105,7 +107,35 @@ public class CarteiraDAO {
 
     public double obterTotalCarteiraAnterior(){
         double valor = 0;
-        Cursor cursor = this.database.rawQuery("SELECT SUM(valor) FROM " + NOME_DA_TABELA + " WHERE data < ?", Recursos.whereMesAtual());
+        Cursor cursor = this.database.rawQuery("SELECT SUM(valor) FROM " + NOME_DA_TABELA + " WHERE (data < ?) and (previsao = 0) ", Recursos.whereMesAtual());
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                valor = cursor.getDouble(0);
+            }
+            cursor.close();
+        }
+
+        return valor;
+    }
+
+    public double obterTotalCarteiraPrevisto(){
+        double valor = 0;
+        Cursor cursor = this.database.rawQuery("SELECT SUM(valor) FROM " + NOME_DA_TABELA + " WHERE (data between ? and ?)", Recursos.whereBetweenMesAtual());
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                valor = cursor.getDouble(0);
+            }
+            cursor.close();
+        }
+
+        return valor;
+    }
+
+    public double obterTotalCarteiraPrevistoAnterior(){
+        double valor = 0;
+        Cursor cursor = this.database.rawQuery("SELECT SUM(valor) FROM " + NOME_DA_TABELA + " WHERE (data < ?)", Recursos.whereMesAtual());
 
         if (cursor != null) {
             if (cursor.moveToFirst()) {

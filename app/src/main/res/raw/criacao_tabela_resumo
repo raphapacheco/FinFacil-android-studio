@@ -1,0 +1,9 @@
+CREATE TABLE resumo
+(
+    _id INTEGER PRIMARY KEY AUTOINCREMENT,
+    descricao TEXT,
+    valor REAL,
+    data TEXT,
+    categoria_id INTEGER,
+    previsao INTEGER DEFAULT 0
+)

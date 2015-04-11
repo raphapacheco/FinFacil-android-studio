@@ -1,0 +1,16 @@
+INSERT INTO categoria('descricao') VALUES
+    ('Alimentação'),
+    ('Aluguel'),
+    ('Automóvel'),
+    ('Casa'),
+    ('Combustível'),
+    ('Compras'),
+    ('Contas'),
+    ('Educação'),
+    ('Investimentos'),
+    ('Lazer'),
+    ('Outros'),
+    ('Recebimentos'),
+    ('Salário'),
+    ('Saúde'),
+    ('Vestuário')

@@ -1,0 +1,9 @@
+CREATE TABLE cartao
+(
+    _id INTEGER PRIMARY KEY AUTOINCREMENT,
+    descricao TEXT,
+    valor REAL,
+    parcela TEXT,
+    data TEXT,
+    categoria_id INTEGER
+)
