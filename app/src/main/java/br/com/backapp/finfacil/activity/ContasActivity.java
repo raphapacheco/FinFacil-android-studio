@@ -12,7 +12,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageButton;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TabHost;
@@ -37,6 +39,7 @@ import br.com.backapp.finfacil.database.DatabaseHelper;
 import br.com.backapp.finfacil.model.Cartao;
 import br.com.backapp.finfacil.model.Carteira;
 import br.com.backapp.finfacil.model.Resumo;
+import br.com.backapp.finfacil.resources.Configuracoes;
 import br.com.backapp.finfacil.resources.Recursos;
 
 public class ContasActivity extends ActionBarActivity {
@@ -48,6 +51,9 @@ public class ContasActivity extends ActionBarActivity {
     private ListView listViewResumo;
     private ListView listViewCarteira;
     private ListView listViewCartao;
+    private ImageButton buttonTotalizadores;
+    private TextView textTotal;
+    private TextView textTotalPrevisto;
     private DatabaseHelper databaseHelper;
     private SQLiteDatabase base;
     private ResumoDAO resumoDAO;
@@ -69,6 +75,7 @@ public class ContasActivity extends ActionBarActivity {
     private Resumo resumoSelecionado;
     private Carteira carteiraSelecionado;
     private Cartao cartaoSelecionado;
+    private Configuracoes configuracoes;
 
 
     @Override
@@ -76,13 +83,14 @@ public class ContasActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contas);
         this.context = getApplicationContext();
-
         this.databaseHelper = new DatabaseHelper(this);
-        base = databaseHelper.getWritableDatabase();
+        this.base = databaseHelper.getWritableDatabase();
         this.resumoDAO = new ResumoDAO(base);
         this.carteiraDAO = new CarteiraDAO(base);
         this.cartaoDAO = new CartaoDAO(base);
+        this.configuracoes = new Configuracoes(context);
 
+        preencherVariaveisCampos();
         configurarActionBar();
         carregarContasSelecionadas();
         configurarListView();
@@ -103,6 +111,21 @@ public class ContasActivity extends ActionBarActivity {
             if (abaSelecionada.equals(ABA_CARTAO_NOME))
                 abas.setCurrentTab(2);
         }
+    }
+
+    private void preencherVariaveisCampos() {
+        this.textTotal = (TextView) findViewById(R.id.activity_contas_total);
+        this.textTotalPrevisto = (TextView) findViewById(R.id.activity_contas_total_previsto);
+        this.buttonTotalizadores = (ImageButton) findViewById(R.id.activity_contas_botao_total);
+
+        this.buttonTotalizadores.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                configuracoes.setModoVisualizacao(configuracoes.getModoVisualizacao() + 1);
+                configuracoes.salvar();
+                atualizarContas();
+            }
+        });
     }
 
     @Override
@@ -270,12 +293,6 @@ public class ContasActivity extends ActionBarActivity {
         totalCarteiraPrevistoAnterior = carteiraDAO.obterTotalCarteiraPrevistoAnterior();
         cartaos = cartaoDAO.obterTodosNaDataAtual();
         totalCartao = cartaoDAO.obterTotalCartao();
-
-        totalCarteira += totalCarteiraAnterior;
-        totalResumo += totalCarteira - totalCartao;
-
-        totalCarteiraPrevisto += totalCarteiraPrevistoAnterior;
-        totalResumoPrevisto += totalCarteiraPrevisto - totalCartao;
 
         Resumo resumoCarteira = new Resumo();
         resumoCarteira.setId(-1);
@@ -482,11 +499,17 @@ public class ContasActivity extends ActionBarActivity {
         String textoTotal = getResources().getString(R.string.text_total);
         String textoTotalPrevisto = getResources().getString(R.string.text_total_previsao);
 
-        TextView textTotal = (TextView) findViewById(R.id.activity_contas_total);
-        TextView textTotalPrevisto = (TextView) findViewById(R.id.activity_contas_total_previsto);
-
         double total = 0;
         double previsto = 0;
+
+        if (configuracoes.getModoVisualizacao() <=3) {
+            totalCarteira += totalCarteiraAnterior;
+            totalCarteiraPrevisto += totalCarteiraPrevistoAnterior;
+        }
+
+        totalResumo += totalCarteira - totalCartao;
+        totalResumoPrevisto += totalCarteiraPrevisto - totalCartao;
+
         if (abaSelecionada.equals(ABA_RESUMO_NOME)) {
             total = totalResumo;
             previsto = totalResumoPrevisto;
@@ -508,12 +531,36 @@ public class ContasActivity extends ActionBarActivity {
         textTotalPrevisto.setText(textoTotalPrevisto + " " + String.format(textMoeda, previsto));
         textTotalPrevisto.setTypeface(null, Typeface.BOLD);
 
+        textTotal.setVisibility(View.VISIBLE);
         textTotalPrevisto.setVisibility(View.VISIBLE);
 
-        if (previsto == 0 || total == previsto)
-            textTotalPrevisto.setVisibility(View.GONE);
+        //if (total == previsto)
+        //    textTotalPrevisto.setVisibility(View.GONE);
 
-        textTotal.setBackgroundColor(total < 0 ? getResources().getColor(R.color.theme_red_primary) : getResources().getColor(R.color.primary));
-        textTotalPrevisto.setBackgroundColor(previsto < 0 ? getResources().getColor(R.color.theme_red_primary) : getResources().getColor(R.color.primary));
+        textTotal.setTextColor(total < 0 ? getResources().getColor(R.color.theme_red_primary) : getResources().getColor(R.color.white));
+        textTotalPrevisto.setTextColor(previsto < 0 ? getResources().getColor(R.color.theme_red_primary) : getResources().getColor(R.color.white));
+
+        switch (configuracoes.getModoVisualizacao()){
+            case 2:
+                buttonTotalizadores.setImageResource(R.drawable.ic_total_2);
+                textTotalPrevisto.setVisibility(View.GONE);
+                break;
+            case 3:
+                buttonTotalizadores.setImageResource(R.drawable.ic_total_3);
+                textTotal.setVisibility(View.GONE);
+                break;
+            case 4:
+                buttonTotalizadores.setImageResource(R.drawable.ic_total_4);
+                break;
+            case 5:
+                buttonTotalizadores.setImageResource(R.drawable.ic_total_5);
+                textTotalPrevisto.setVisibility(View.GONE);
+                break;
+            case 6:
+                buttonTotalizadores.setImageResource(R.drawable.ic_total_6);
+                textTotal.setVisibility(View.GONE);
+                break;
+            default:buttonTotalizadores.setImageResource(R.drawable.ic_total_1);
+        }
     }
 }
