@@ -8,6 +8,12 @@
         android:hint="@string/action_data"
         app:showAsAction="always" />
 
+    <item android:id="@+id/action_visao_totalizador"
+        android:title="@string/action_visao_totalizador"
+        android:hint="@string/action_visao_totalizador"
+        android:icon="@drawable/ic_visao_totalizador"
+        app:showAsAction="always" />
+
     <item android:id="@+id/action_settings"
         android:title="@string/action_settings"
         android:hint="@string/action_settings"

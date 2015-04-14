@@ -56,48 +56,29 @@
 
     <LinearLayout android:id="@+id/linearLayout_total"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_alignParentBottom="true"
-        android:background="@color/primary">
+        android:layout_height="65dp"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true" >
 
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:id="@+id/activity_contas_botao_total"
-            style="?android:attr/borderlessButtonStyle"
-            android:src="@drawable/ic_total_1"
-            android:layout_weight="0"
-            android:clickable="false" />
-
-        <LinearLayout android:id="@+id/linearLayout_totalizadores"
+        <TextView
+            android:id="@+id/activity_contas_total"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_alignParentBottom="true" >
+            android:padding="5dp"
+            android:layout_weight="1"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:background="?colorPrimary" />
 
-            <TextView
-                android:id="@+id/activity_contas_total"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:padding="5dp"
-                android:layout_weight="1"
-                android:textSize="16sp"
-                android:textColor="@color/white"
-                android:background="?colorPrimary" />
-
-            <TextView
-                android:id="@+id/activity_contas_total_previsto"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:padding="5dp"
-                android:layout_weight="2"
-                android:textSize="16sp"
-                android:textColor="@color/white"
-                android:background="?colorPrimary" />
-
-        </LinearLayout>
+        <TextView
+            android:id="@+id/activity_contas_total_previsto"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:layout_weight="2"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:background="?colorPrimary" />
 
     </LinearLayout>
 

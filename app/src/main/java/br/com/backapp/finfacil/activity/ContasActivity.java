@@ -1,7 +1,9 @@
 package br.com.backapp.finfacil.activity;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
@@ -51,7 +53,6 @@ public class ContasActivity extends ActionBarActivity {
     private ListView listViewResumo;
     private ListView listViewCarteira;
     private ListView listViewCartao;
-    private ImageButton buttonTotalizadores;
     private TextView textTotal;
     private TextView textTotalPrevisto;
     private DatabaseHelper databaseHelper;
@@ -116,16 +117,6 @@ public class ContasActivity extends ActionBarActivity {
     private void preencherVariaveisCampos() {
         this.textTotal = (TextView) findViewById(R.id.activity_contas_total);
         this.textTotalPrevisto = (TextView) findViewById(R.id.activity_contas_total_previsto);
-        this.buttonTotalizadores = (ImageButton) findViewById(R.id.activity_contas_botao_total);
-
-        this.buttonTotalizadores.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                configuracoes.setModoVisualizacao(configuracoes.getModoVisualizacao() + 1);
-                configuracoes.salvar();
-                atualizarContas();
-            }
-        });
     }
 
     @Override
@@ -179,6 +170,31 @@ public class ContasActivity extends ActionBarActivity {
             },dataAtual.get(Calendar.YEAR), dataAtual.get(Calendar.MONTH), dataAtual.get(Calendar.DAY_OF_MONTH));
 
             datePicker.show();
+            return true;
+        }
+
+        if (id == R.id.action_visao_totalizador){
+            CharSequence opcoes[] = new CharSequence[] {
+                    getString(R.string.text_visao_geral),
+                    getString(R.string.text_visao_geral_total),
+                    getString(R.string.text_visao_geral_previsao),
+                    getString(R.string.text_visao_mensal),
+                    getString(R.string.text_visao_mensal_total),
+                    getString(R.string.text_visao_mensal_previsao)};
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(getString(R.string.action_visao_totalizador));
+            builder.setSingleChoiceItems(opcoes, configuracoes.getModoVisualizacao(), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int itemSelecionado) {
+                    configuracoes.setModoVisualizacao(itemSelecionado);
+                    configuracoes.salvar();
+                    atualizarContas();
+                    dialog.dismiss();
+                }
+            });
+
+            builder.show();
             return true;
         }
 
@@ -293,6 +309,14 @@ public class ContasActivity extends ActionBarActivity {
         totalCarteiraPrevistoAnterior = carteiraDAO.obterTotalCarteiraPrevistoAnterior();
         cartaos = cartaoDAO.obterTodosNaDataAtual();
         totalCartao = cartaoDAO.obterTotalCartao();
+
+        if (configuracoes.getModoVisualizacao() < 3) {
+            totalCarteira += totalCarteiraAnterior;
+            totalCarteiraPrevisto += totalCarteiraPrevistoAnterior;
+        }
+
+        totalResumo += totalCarteira - totalCartao;
+        totalResumoPrevisto += totalCarteiraPrevisto - totalCartao;
 
         Resumo resumoCarteira = new Resumo();
         resumoCarteira.setId(-1);
@@ -502,14 +526,6 @@ public class ContasActivity extends ActionBarActivity {
         double total = 0;
         double previsto = 0;
 
-        if (configuracoes.getModoVisualizacao() <=3) {
-            totalCarteira += totalCarteiraAnterior;
-            totalCarteiraPrevisto += totalCarteiraPrevistoAnterior;
-        }
-
-        totalResumo += totalCarteira - totalCartao;
-        totalResumoPrevisto += totalCarteiraPrevisto - totalCartao;
-
         if (abaSelecionada.equals(ABA_RESUMO_NOME)) {
             total = totalResumo;
             previsto = totalResumoPrevisto;
@@ -522,7 +538,6 @@ public class ContasActivity extends ActionBarActivity {
 
         if (abaSelecionada.equals(ABA_CARTAO_NOME)){
             total = totalCartao;
-            previsto = totalCartao;
         }
 
         textTotal.setText(textoTotal + " " + String.format(textMoeda, total));
@@ -531,36 +546,28 @@ public class ContasActivity extends ActionBarActivity {
         textTotalPrevisto.setText(textoTotalPrevisto + " " + String.format(textMoeda, previsto));
         textTotalPrevisto.setTypeface(null, Typeface.BOLD);
 
-        textTotal.setVisibility(View.VISIBLE);
-        textTotalPrevisto.setVisibility(View.VISIBLE);
-
-        //if (total == previsto)
-        //    textTotalPrevisto.setVisibility(View.GONE);
-
         textTotal.setTextColor(total < 0 ? getResources().getColor(R.color.theme_red_primary) : getResources().getColor(R.color.white));
         textTotalPrevisto.setTextColor(previsto < 0 ? getResources().getColor(R.color.theme_red_primary) : getResources().getColor(R.color.white));
 
         switch (configuracoes.getModoVisualizacao()){
-            case 2:
-                buttonTotalizadores.setImageResource(R.drawable.ic_total_2);
-                textTotalPrevisto.setVisibility(View.GONE);
-                break;
-            case 3:
-                buttonTotalizadores.setImageResource(R.drawable.ic_total_3);
-                textTotal.setVisibility(View.GONE);
-                break;
+            case 1:
             case 4:
-                buttonTotalizadores.setImageResource(R.drawable.ic_total_4);
-                break;
-            case 5:
-                buttonTotalizadores.setImageResource(R.drawable.ic_total_5);
+                textTotal.setVisibility(View.VISIBLE);
                 textTotalPrevisto.setVisibility(View.GONE);
                 break;
-            case 6:
-                buttonTotalizadores.setImageResource(R.drawable.ic_total_6);
+            case 2:
+            case 5:
                 textTotal.setVisibility(View.GONE);
+                textTotalPrevisto.setVisibility(View.VISIBLE);
                 break;
-            default:buttonTotalizadores.setImageResource(R.drawable.ic_total_1);
+            default:
+                textTotal.setVisibility(View.VISIBLE);
+                textTotalPrevisto.setVisibility(View.VISIBLE);
+                break;
         }
+
+        //Se for na aba cartão não tem totalizador de previsão
+        if (abaSelecionada.equals(ABA_CARTAO_NOME))
+            textTotalPrevisto.setVisibility(View.GONE);
     }
 }

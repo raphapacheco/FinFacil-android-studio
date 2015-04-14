@@ -5,6 +5,7 @@
     <string name="app_title">FinFacil</string>
     <string name="action_settings">Configurações</string>
     <string name="action_data">data atual</string>
+    <string name="action_visao_totalizador">Visão do totalizador</string>
     <string name="text_salvar">Salvar</string>
     <string name="text_cancelar">Cancelar</string>
 
@@ -54,5 +55,13 @@
     <string name="list_view_resumo">Resumo</string>
     <string name="list_view_carteira">Carteira</string>
     <string name="list_view_cartao">Cartão</string>
+
+    <!-- Opções de visão de totalizadores -->
+    <string name="text_visao_geral">Geral</string>
+    <string name="text_visao_geral_total">Geral total</string>
+    <string name="text_visao_geral_previsao">Geral previsão</string>
+    <string name="text_visao_mensal">Mensal</string>
+    <string name="text_visao_mensal_total">Mensal total</string>
+    <string name="text_visao_mensal_previsao">Mensal previsão</string>
 
 </resources>

@@ -16,8 +16,8 @@ public class Configuracoes {
     private String DIA_FECHAMENTO_CONFIG = "DIA_FECHAMENTO";
     private String MODO_VISUALIZACAO_TOTALIZADOR_CONFIG = "DIA_FECHAMENTO";
 
-    private Integer diaFechamento = 1;
-    private Integer modoVisualizacao = 1;
+    private Integer diaFechamento = 0;
+    private Integer modoVisualizacao = 0;
 
     public Configuracoes(Context context){
         this.config = context.getSharedPreferences("FinFacilConfig", Context.MODE_PRIVATE);
@@ -51,9 +51,6 @@ public class Configuracoes {
 
     public void setModoVisualizacao(Integer modoVisualizacao) {
         this.modoVisualizacao = modoVisualizacao;
-
-        if (modoVisualizacao > 6)
-            this.modoVisualizacao = 1;
     }
 
 }
