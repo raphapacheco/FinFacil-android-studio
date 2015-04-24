@@ -52,9 +52,9 @@ public class CartaoDAO {
         this.database.delete(NOME_DA_TABELA, "_id = ?", new String[]{""+cartao.getId()});
     }
 
-    public ArrayList<Cartao> obterTodosNaDataAtual() {
+    public ArrayList<Cartao> obterTodosNaDataAtual(boolean ordenarPorDataDesc) {
         ArrayList<Cartao> lancamentos = new ArrayList<Cartao>();
-        Cursor cursor = this.database.query(NOME_DA_TABELA, null, "data BETWEEN ? and ?", Recursos.whereBetweenMesAtual(), null, null, "data");
+        Cursor cursor = this.database.query(NOME_DA_TABELA, null, "data BETWEEN ? and ?", Recursos.whereBetweenMesAtual(), null, null, ordenarPorDataDesc ? "data desc" : "data");
         cursor.moveToFirst();
 
         for (int i = 0; i < cursor.getCount(); i++) {

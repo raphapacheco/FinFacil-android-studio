@@ -8,7 +8,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_alignParentTop="false"
-        android:layout_above="@+id/linearLayout_total"
+        android:layout_above="@+id/activity_contas_card"
         android:id="@+id/linearLayout_abas">
 
         <TabHost
@@ -54,44 +54,52 @@
 
     </LinearLayout>
 
-    <LinearLayout android:id="@+id/linearLayout_total"
+    <android.support.v7.widget.CardView
+        android:id="@+id/activity_contas_card"
+        style="@style/CardViewSimple"
         android:layout_width="fill_parent"
-        android:layout_height="65dp"
-        android:orientation="vertical"
-        android:layout_alignParentBottom="true" >
+        android:layout_height="wrap_content"
+        cardCornerRadius="4dp"
+        android:layout_alignParentBottom="true">
 
-        <TextView
-            android:id="@+id/activity_contas_total"
+        <LinearLayout android:id="@+id/linearLayout_total"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:layout_weight="1"
-            android:textSize="16sp"
-            android:textColor="@color/white"
-            android:background="?colorPrimary" />
+            android:orientation="vertical"
+            android:layout_alignParentBottom="true" >
 
-        <TextView
-            android:id="@+id/activity_contas_total_previsto"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:layout_weight="2"
-            android:textSize="16sp"
-            android:textColor="@color/white"
-            android:background="?colorPrimary" />
+            <TextView
+                android:id="@+id/activity_contas_total"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:layout_weight="1"
+                android:textSize="16sp"
+                android:textColor="@color/text_green" />
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/activity_contas_total_previsto"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:layout_weight="2"
+                android:textSize="16sp"
+                android:textColor="@color/text_green"/>
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
 
     <com.getbase.floatingactionbutton.AddFloatingActionButton
         android:id="@+id/botao_adicionar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         fab:fab_plusIconColor="@color/white"
-        fab:fab_colorNormal="@color/laranja_500"
-        fab:fab_colorPressed="@color/laranja_700"
+        fab:fab_colorNormal="@color/action_button_color"
+        fab:fab_colorPressed="@color/action_button_pressed"
         fab:fab_size="normal"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="16dp" />
+        android:layout_above="@+id/activity_contas_card"
+        android:layout_alignRight="@+id/activity_contas_card"
+        android:layout_alignEnd="@+id/activity_contas_card" />
 
 </RelativeLayout>

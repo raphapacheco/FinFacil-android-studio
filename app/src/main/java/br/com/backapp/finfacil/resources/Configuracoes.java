@@ -8,16 +8,15 @@ import android.content.SharedPreferences;
  */
 public class Configuracoes {
 
-
-    public enum ModoVisualizacaoTotalizador { mvtTotal };
-
     private SharedPreferences config;
     private SharedPreferences.Editor editor;
     private String DIA_FECHAMENTO_CONFIG = "DIA_FECHAMENTO";
     private String MODO_VISUALIZACAO_TOTALIZADOR_CONFIG = "DIA_FECHAMENTO";
+    private String ORDENACAO_LANCAMENTOS = "ORDENACAO_LANCAMENTOS";
 
     private Integer diaFechamento = 0;
     private Integer modoVisualizacao = 0;
+    private Integer ordenacaoLancamentos = 0;
 
     public Configuracoes(Context context){
         this.config = context.getSharedPreferences("FinFacilConfig", Context.MODE_PRIVATE);
@@ -28,11 +27,15 @@ public class Configuracoes {
 
         if (config.contains(MODO_VISUALIZACAO_TOTALIZADOR_CONFIG))
             this.setModoVisualizacao(config.getInt(MODO_VISUALIZACAO_TOTALIZADOR_CONFIG, 1));
+
+        if (config.contains(ORDENACAO_LANCAMENTOS))
+            this.setOrdenacaoLancamentos(config.getInt(ORDENACAO_LANCAMENTOS, 1));
     }
 
     public void salvar(){
         editor.putInt(DIA_FECHAMENTO_CONFIG, diaFechamento);
         editor.putInt(MODO_VISUALIZACAO_TOTALIZADOR_CONFIG, modoVisualizacao);
+        editor.putInt(ORDENACAO_LANCAMENTOS, ordenacaoLancamentos);
 
         editor.commit(); // commit changes
     }
@@ -53,4 +56,11 @@ public class Configuracoes {
         this.modoVisualizacao = modoVisualizacao;
     }
 
+    public Integer getOrdenacaoLancamentos() {
+        return ordenacaoLancamentos;
+    }
+
+    public void setOrdenacaoLancamentos(Integer ordenacaoLancamentos) {
+        this.ordenacaoLancamentos = ordenacaoLancamentos;
+    }
 }

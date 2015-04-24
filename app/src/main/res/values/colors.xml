@@ -3,18 +3,29 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFF</color>
     <color name="grey">#616161</color>
+
     <color name="text_green">#1B5E20</color>
     <color name="text_red">#B71C1C</color>
-    <color name="text_previsao">#FF5722</color>
+    <color name="text_previsao">#BF7C00</color>
+
     <color name="transparent">#00000000</color>
-    <color name="primary">#4CAF50</color>
-    <color name="primary_dark">#388E3C</color>
+    <color name="primary">#82C12C</color>
+    <color name="primary_dark">#53850C</color>
     <color name="primary_light">#C8E6C9</color>
-    <color name="accent">#FF5722</color>
+
+    <color name="accent">#82C12C</color>
+
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#727272</color>
+
     <color name="icons">#FFFFFF</color>
     <color name="divider">#B6B6B6</color>
+
+    <color name="preto_marron">#49463D</color>
+    <color name="preto_marron_escuro">#3D3620</color>
+
+    <color name="action_button_color">#82C12C</color>
+    <color name="action_button_pressed">#53850C</color>
 
     <color name="theme_red_primary">#B71C1C</color>
 

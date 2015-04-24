@@ -101,7 +101,8 @@ public class Recursos {
 
     public static boolean confirmar(Context context, final String mensagem, final Runnable metodo) {
         AlertDialog dialog = new AlertDialog.Builder(context).create();
-        dialog.setTitle(R.string.text_confirmacao);
+        //dialog.setIcon(android.R.drawable.ic_dialog_alert);
+        //dialog.setTitle(R.string.text_confirmacao);
         dialog.setMessage(mensagem);
         dialog.setCancelable(false);
 
@@ -117,7 +118,6 @@ public class Recursos {
                 dialog.dismiss();
             }
         });
-        dialog.setIcon(android.R.drawable.ic_dialog_alert);
         dialog.show();
 
         return true;

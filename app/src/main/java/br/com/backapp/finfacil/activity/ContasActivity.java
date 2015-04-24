@@ -8,15 +8,18 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TabHost;
@@ -55,6 +58,7 @@ public class ContasActivity extends ActionBarActivity {
     private ListView listViewCartao;
     private TextView textTotal;
     private TextView textTotalPrevisto;
+    private LinearLayout linearLayoutTotal;
     private DatabaseHelper databaseHelper;
     private SQLiteDatabase base;
     private ResumoDAO resumoDAO;
@@ -77,7 +81,6 @@ public class ContasActivity extends ActionBarActivity {
     private Carteira carteiraSelecionado;
     private Cartao cartaoSelecionado;
     private Configuracoes configuracoes;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,8 +137,12 @@ public class ContasActivity extends ActionBarActivity {
         menuData.setTitle(Recursos.dataAtualFormatoMesAno());
 
         //TODO: Remover após criar as configurações
-        MenuItem conf = menu.findItem(R.id.action_settings);
-        conf.setVisible(false);
+        MenuItem item = menu.findItem(R.id.action_settings);
+        item.setVisible(false);
+
+        item = menu.findItem(R.id.action_ordenacao_lancamentos);
+        item.setIcon(configuracoes.getOrdenacaoLancamentos() == 0 ? R.drawable.ic_sort_date_asc : R.drawable.ic_sort_date_desc);
+        item.setTitle(configuracoes.getOrdenacaoLancamentos() == 0 ? R.string.action_ordenar_lancamentos_asc : R.string.action_ordenar_lancamentos_desc);
 
         return true;
     }//onCreateOptionsMenu
@@ -195,6 +202,17 @@ public class ContasActivity extends ActionBarActivity {
             });
 
             builder.show();
+            return true;
+        }
+
+        if (id == R.id.action_ordenacao_lancamentos) {
+            configuracoes.setOrdenacaoLancamentos(configuracoes.getOrdenacaoLancamentos() == 0 ? 1 : 0);
+            configuracoes.salvar();
+            item.setIcon(configuracoes.getOrdenacaoLancamentos() == 0 ? R.drawable.ic_sort_date_asc : R.drawable.ic_sort_date_desc);
+            item.setTitle(configuracoes.getOrdenacaoLancamentos() == 0 ? R.string.action_ordenar_lancamentos_asc : R.string.action_ordenar_lancamentos_desc);
+
+            atualizarContas();
+
             return true;
         }
 
@@ -299,15 +317,15 @@ public class ContasActivity extends ActionBarActivity {
     }
 
     private void carregarContasSelecionadas() {
-        resumos = resumoDAO.obterTodosNaDataAtual();
+        resumos = resumoDAO.obterTodosNaDataAtual(configuracoes.getOrdenacaoLancamentos() == 1);
         totalResumo = resumoDAO.obterTotalResumo();
         totalResumoPrevisto = resumoDAO.obterTotalResumoPrevisto();
-        carteiras = carteiraDAO.obterTodosNaDataAtual();
+        carteiras = carteiraDAO.obterTodosNaDataAtual(configuracoes.getOrdenacaoLancamentos() == 1);
         totalCarteira = carteiraDAO.obterTotalCarteira();
         totalCarteiraPrevisto = carteiraDAO.obterTotalCarteiraPrevisto();
         totalCarteiraAnterior = carteiraDAO.obterTotalCarteiraAnterior();
         totalCarteiraPrevistoAnterior = carteiraDAO.obterTotalCarteiraPrevistoAnterior();
-        cartaos = cartaoDAO.obterTodosNaDataAtual();
+        cartaos = cartaoDAO.obterTodosNaDataAtual(configuracoes.getOrdenacaoLancamentos() == 1);
         totalCartao = cartaoDAO.obterTotalCartao();
 
         if (configuracoes.getModoVisualizacao() < 3) {
@@ -546,8 +564,8 @@ public class ContasActivity extends ActionBarActivity {
         textTotalPrevisto.setText(textoTotalPrevisto + " " + String.format(textMoeda, previsto));
         textTotalPrevisto.setTypeface(null, Typeface.BOLD);
 
-        textTotal.setTextColor(total < 0 ? getResources().getColor(R.color.theme_red_primary) : getResources().getColor(R.color.white));
-        textTotalPrevisto.setTextColor(previsto < 0 ? getResources().getColor(R.color.theme_red_primary) : getResources().getColor(R.color.white));
+        textTotal.setTextColor(total < 0 ? getResources().getColor(R.color.theme_red_primary) : getResources().getColor(R.color.text_green));
+        textTotalPrevisto.setTextColor(previsto < 0 ? getResources().getColor(R.color.theme_red_primary) : getResources().getColor(R.color.text_green));
 
         switch (configuracoes.getModoVisualizacao()){
             case 1:

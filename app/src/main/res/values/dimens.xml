@@ -2,9 +2,9 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="aba_tamanho_borda_retirada_selecionada">-4dp</dimen>
-    <dimen name="aba_tamanho_borda_inferior_selecionada">4dp</dimen>
-    <dimen name="aba_tamanho_borda_inferior_sem_foco">1dp</dimen>
+    <dimen name="aba_tamanho_borda_retirada_selecionada">-5dp</dimen>
+    <dimen name="aba_tamanho_borda_inferior_selecionada">5dp</dimen>
+    <dimen name="aba_tamanho_borda_inferior_sem_foco">2dp</dimen>
     <dimen name="margem_radio_button">7dp</dimen>
 
     <dimen name="tamanho_texto">16sp</dimen>

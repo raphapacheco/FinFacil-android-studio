@@ -6,6 +6,9 @@
     <string name="action_settings">Configurações</string>
     <string name="action_data">data atual</string>
     <string name="action_visao_totalizador">Visão do totalizador</string>
+    <string name="action_ordenar_lancamentos_asc">Por data crescente</string>
+    <string name="action_ordenar_lancamentos_desc">Por data decrescente</string>
+
     <string name="text_salvar">Salvar</string>
     <string name="text_cancelar">Cancelar</string>
 
@@ -16,9 +19,7 @@
     <string name="text_data">Data:</string>
     <string name="text_moeda">R$:</string>
     <string name="text_moeda_para_formatacao">R$: %.2f</string>
-    <string name="text_resumo">Resumo</string>
-    <string name="text_carteira">Carteira</string>
-    <string name="text_cartao">Cartão</string>
+
     <string name="text_configuracao">Configurações</string>
     <string name="text_salario">Salário</string>
     <string name="text_dia_fechamento_cartao">Dia de fechamento da fatura:</string>
@@ -44,17 +45,22 @@
     <string name="text_efetivar">Efetivar</string>
 
     <!-- Mensagens -->
-    <string name="msg_confirmar_exclusao">Confirma excluir?</string>
-    <string name="msg_confirmar_efetivar">Confirma efetivar?</string>
+    <string name="msg_confirmar_exclusao">Confirma excluir o lançamento?</string>
+    <string name="msg_confirmar_efetivar">Confirma efetivar o lançamento?</string>
     <string name="msg_lancamento_efetuado">Lançamento efetuado!</string>
     <string name="msg_lancamento_excluido">Lançamento excluído!</string>
     <string name="msg_lancamento_efetivado">Lançamento efetivado!</string>
 
 
     <!-- Tabs Labels -->
-    <string name="list_view_resumo">Resumo</string>
+    <string name="list_view_resumo">C. Corrente</string>
     <string name="list_view_carteira">Carteira</string>
     <string name="list_view_cartao">Cartão</string>
+
+    <!-- Text activities -->
+    <string name="text_resumo">C. Corrente</string>
+    <string name="text_carteira">Carteira</string>
+    <string name="text_cartao">Cartão</string>
 
     <!-- Opções de visão de totalizadores -->
     <string name="text_visao_geral">Geral</string>

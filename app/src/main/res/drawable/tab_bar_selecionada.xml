@@ -6,9 +6,9 @@
         android:left="@dimen/aba_tamanho_borda_retirada_selecionada"
         android:right="@dimen/aba_tamanho_borda_retirada_selecionada">
         <shape android:shape="rectangle">
-            <solid android:color="@color/primary" />
+            <solid android:color="@color/preto_marron" />
             <stroke
-                android:color="@color/laranja_500"
+                android:color="@color/primary"
                 android:width="@dimen/aba_tamanho_borda_inferior_selecionada" />
         </shape>
     </item>
