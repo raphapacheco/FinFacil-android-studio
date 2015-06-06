@@ -3,10 +3,13 @@ package br.com.backapp.finfacil.database;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import br.com.backapp.finfacil.R;
 import br.com.backapp.finfacil.data_access_object.CartaoDAO;
@@ -32,7 +35,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         db.execSQL(lerArquivoSql(R.raw.criacao_tabela_resumo));
         db.execSQL(lerArquivoSql(R.raw.criacao_tabela_carteira));
         db.execSQL(lerArquivoSql(R.raw.criacao_tabela_cartao));
-        db.execSQL(lerArquivoSql(R.raw.valores_padroes_categoria));
+        lerArquivoSQLExecutarLinhaALinha(db, R.raw.valores_padroes_categoria);
     }
 
     @Override
@@ -45,7 +48,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
         if (oldVersion < 3){
             db.execSQL(lerArquivoSql(R.raw.criacao_tabela_categoria));
-            db.execSQL(lerArquivoSql(R.raw.valores_padroes_categoria));
+            lerArquivoSQLExecutarLinhaALinha(db, R.raw.valores_padroes_categoria);
             db.execSQL(lerArquivoSql(R.raw.criacao_campo_categoria_resumo));
             db.execSQL(lerArquivoSql(R.raw.criacao_campo_categoria_carteira));
             db.execSQL(lerArquivoSql(R.raw.criacao_campo_categoria_cartao));
@@ -71,4 +74,21 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         }
         return outputStream.toString();
     }
+
+    public void lerArquivoSQLExecutarLinhaALinha(SQLiteDatabase db, int rawId){
+        try {
+            InputStream is = this.context.getResources().openRawResource(rawId);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                Log.i("SQL Script", line);
+                if (!line.isEmpty() && !line.trim().startsWith("--"))
+                    db.execSQL(line);
+            }
+        } catch (IOException e) {
+            Log.e("SQL Script", e.getMessage());
+        }
+        Log.i("SQL Script", "script executed");    }
+
+
 }
