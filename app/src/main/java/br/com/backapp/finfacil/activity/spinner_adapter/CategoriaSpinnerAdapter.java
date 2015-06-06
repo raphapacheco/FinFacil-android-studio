@@ -50,7 +50,7 @@ public class CategoriaSpinnerAdapter extends ArrayAdapter<Categoria> {
     public View getView(int position, View convertView, ViewGroup parent) {
         TextView label = new TextView(context);
         label.setTextSize(18);
-        label.setPadding(10, 10, 10, 10);
+        label.setPadding(10, 2, 2, 2);
         label.setText(categorias.get(position).getDescricao());
         return label;
     }
