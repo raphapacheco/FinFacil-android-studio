@@ -77,6 +77,7 @@ public class ResumoListViewAdapter extends BaseAdapter {
         mViewHolder.textViewLineDescricao.setTypeface(null, Typeface.NORMAL);
         mViewHolder.textViewLineValor.setTypeface(null, Typeface.NORMAL);
         mViewHolder.textViewLineData.setVisibility(View.VISIBLE);
+        mViewHolder.textViewLineDescricao.setTextColor(context.getResources().getColor(R.color.black));
 
         //Id < 0 quer dizer que é um totalizador
         if (resumos.get(position).getId() < 0) {

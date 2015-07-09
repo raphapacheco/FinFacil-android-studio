@@ -1,18 +1,25 @@
 package br.com.backapp.finfacil.activity;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TabHost;
@@ -37,6 +44,7 @@ import br.com.backapp.finfacil.database.DatabaseHelper;
 import br.com.backapp.finfacil.model.Cartao;
 import br.com.backapp.finfacil.model.Carteira;
 import br.com.backapp.finfacil.model.Resumo;
+import br.com.backapp.finfacil.resources.Configuracoes;
 import br.com.backapp.finfacil.resources.Recursos;
 
 public class ContasActivity extends ActionBarActivity {
@@ -48,6 +56,9 @@ public class ContasActivity extends ActionBarActivity {
     private ListView listViewResumo;
     private ListView listViewCarteira;
     private ListView listViewCartao;
+    private TextView textTotal;
+    private TextView textTotalPrevisto;
+    private LinearLayout linearLayoutTotal;
     private DatabaseHelper databaseHelper;
     private SQLiteDatabase base;
     private ResumoDAO resumoDAO;
@@ -69,20 +80,21 @@ public class ContasActivity extends ActionBarActivity {
     private Resumo resumoSelecionado;
     private Carteira carteiraSelecionado;
     private Cartao cartaoSelecionado;
-
+    private Configuracoes configuracoes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contas);
         this.context = getApplicationContext();
-
         this.databaseHelper = new DatabaseHelper(this);
-        base = databaseHelper.getWritableDatabase();
+        this.base = databaseHelper.getWritableDatabase();
         this.resumoDAO = new ResumoDAO(base);
         this.carteiraDAO = new CarteiraDAO(base);
         this.cartaoDAO = new CartaoDAO(base);
+        this.configuracoes = new Configuracoes(context);
 
+        preencherVariaveisCampos();
         configurarActionBar();
         carregarContasSelecionadas();
         configurarListView();
@@ -105,6 +117,11 @@ public class ContasActivity extends ActionBarActivity {
         }
     }
 
+    private void preencherVariaveisCampos() {
+        this.textTotal = (TextView) findViewById(R.id.activity_contas_total);
+        this.textTotalPrevisto = (TextView) findViewById(R.id.activity_contas_total_previsto);
+    }
+
     @Override
     protected void onSaveInstanceState (Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -120,8 +137,12 @@ public class ContasActivity extends ActionBarActivity {
         menuData.setTitle(Recursos.dataAtualFormatoMesAno());
 
         //TODO: Remover após criar as configurações
-        MenuItem conf = menu.findItem(R.id.action_settings);
-        conf.setVisible(false);
+        MenuItem item = menu.findItem(R.id.action_settings);
+        item.setVisible(false);
+
+        item = menu.findItem(R.id.action_ordenacao_lancamentos);
+        item.setIcon(configuracoes.getOrdenacaoLancamentos() == 0 ? R.drawable.ic_sort_date_asc : R.drawable.ic_sort_date_desc);
+        item.setTitle(configuracoes.getOrdenacaoLancamentos() == 0 ? R.string.action_ordenar_lancamentos_asc : R.string.action_ordenar_lancamentos_desc);
 
         return true;
     }//onCreateOptionsMenu
@@ -156,6 +177,42 @@ public class ContasActivity extends ActionBarActivity {
             },dataAtual.get(Calendar.YEAR), dataAtual.get(Calendar.MONTH), dataAtual.get(Calendar.DAY_OF_MONTH));
 
             datePicker.show();
+            return true;
+        }
+
+        if (id == R.id.action_visao_totalizador){
+            CharSequence opcoes[] = new CharSequence[] {
+                    getString(R.string.text_visao_geral),
+                    getString(R.string.text_visao_geral_total),
+                    getString(R.string.text_visao_geral_previsao),
+                    getString(R.string.text_visao_mensal),
+                    getString(R.string.text_visao_mensal_total),
+                    getString(R.string.text_visao_mensal_previsao)};
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(getString(R.string.action_visao_totalizador));
+            builder.setSingleChoiceItems(opcoes, configuracoes.getModoVisualizacao(), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int itemSelecionado) {
+                    configuracoes.setModoVisualizacao(itemSelecionado);
+                    configuracoes.salvar();
+                    atualizarContas();
+                    dialog.dismiss();
+                }
+            });
+
+            builder.show();
+            return true;
+        }
+
+        if (id == R.id.action_ordenacao_lancamentos) {
+            configuracoes.setOrdenacaoLancamentos(configuracoes.getOrdenacaoLancamentos() == 0 ? 1 : 0);
+            configuracoes.salvar();
+            item.setIcon(configuracoes.getOrdenacaoLancamentos() == 0 ? R.drawable.ic_sort_date_asc : R.drawable.ic_sort_date_desc);
+            item.setTitle(configuracoes.getOrdenacaoLancamentos() == 0 ? R.string.action_ordenar_lancamentos_asc : R.string.action_ordenar_lancamentos_desc);
+
+            atualizarContas();
+
             return true;
         }
 
@@ -260,21 +317,23 @@ public class ContasActivity extends ActionBarActivity {
     }
 
     private void carregarContasSelecionadas() {
-        resumos = resumoDAO.obterTodosNaDataAtual();
+        resumos = resumoDAO.obterTodosNaDataAtual(configuracoes.getOrdenacaoLancamentos() == 1);
         totalResumo = resumoDAO.obterTotalResumo();
         totalResumoPrevisto = resumoDAO.obterTotalResumoPrevisto();
-        carteiras = carteiraDAO.obterTodosNaDataAtual();
+        carteiras = carteiraDAO.obterTodosNaDataAtual(configuracoes.getOrdenacaoLancamentos() == 1);
         totalCarteira = carteiraDAO.obterTotalCarteira();
         totalCarteiraPrevisto = carteiraDAO.obterTotalCarteiraPrevisto();
         totalCarteiraAnterior = carteiraDAO.obterTotalCarteiraAnterior();
         totalCarteiraPrevistoAnterior = carteiraDAO.obterTotalCarteiraPrevistoAnterior();
-        cartaos = cartaoDAO.obterTodosNaDataAtual();
+        cartaos = cartaoDAO.obterTodosNaDataAtual(configuracoes.getOrdenacaoLancamentos() == 1);
         totalCartao = cartaoDAO.obterTotalCartao();
 
-        totalCarteira += totalCarteiraAnterior;
-        totalResumo += totalCarteira - totalCartao;
+        if (configuracoes.getModoVisualizacao() < 3) {
+            totalCarteira += totalCarteiraAnterior;
+            totalCarteiraPrevisto += totalCarteiraPrevistoAnterior;
+        }
 
-        totalCarteiraPrevisto += totalCarteiraPrevistoAnterior;
+        totalResumo += totalCarteira - totalCartao;
         totalResumoPrevisto += totalCarteiraPrevisto - totalCartao;
 
         Resumo resumoCarteira = new Resumo();
@@ -482,11 +541,9 @@ public class ContasActivity extends ActionBarActivity {
         String textoTotal = getResources().getString(R.string.text_total);
         String textoTotalPrevisto = getResources().getString(R.string.text_total_previsao);
 
-        TextView textTotal = (TextView) findViewById(R.id.activity_contas_total);
-        TextView textTotalPrevisto = (TextView) findViewById(R.id.activity_contas_total_previsto);
-
         double total = 0;
         double previsto = 0;
+
         if (abaSelecionada.equals(ABA_RESUMO_NOME)) {
             total = totalResumo;
             previsto = totalResumoPrevisto;
@@ -499,7 +556,6 @@ public class ContasActivity extends ActionBarActivity {
 
         if (abaSelecionada.equals(ABA_CARTAO_NOME)){
             total = totalCartao;
-            previsto = totalCartao;
         }
 
         textTotal.setText(textoTotal + " " + String.format(textMoeda, total));
@@ -508,12 +564,28 @@ public class ContasActivity extends ActionBarActivity {
         textTotalPrevisto.setText(textoTotalPrevisto + " " + String.format(textMoeda, previsto));
         textTotalPrevisto.setTypeface(null, Typeface.BOLD);
 
-        textTotalPrevisto.setVisibility(View.VISIBLE);
+        textTotal.setTextColor(total < 0 ? getResources().getColor(R.color.theme_red_primary) : getResources().getColor(R.color.text_green));
+        textTotalPrevisto.setTextColor(previsto < 0 ? getResources().getColor(R.color.theme_red_primary) : getResources().getColor(R.color.text_green));
 
-        if (previsto == 0 || total == previsto)
+        switch (configuracoes.getModoVisualizacao()){
+            case 1:
+            case 4:
+                textTotal.setVisibility(View.VISIBLE);
+                textTotalPrevisto.setVisibility(View.GONE);
+                break;
+            case 2:
+            case 5:
+                textTotal.setVisibility(View.GONE);
+                textTotalPrevisto.setVisibility(View.VISIBLE);
+                break;
+            default:
+                textTotal.setVisibility(View.VISIBLE);
+                textTotalPrevisto.setVisibility(View.VISIBLE);
+                break;
+        }
+
+        //Se for na aba cartão não tem totalizador de previsão
+        if (abaSelecionada.equals(ABA_CARTAO_NOME))
             textTotalPrevisto.setVisibility(View.GONE);
-
-        textTotal.setBackgroundColor(total < 0 ? getResources().getColor(R.color.theme_red_primary) : getResources().getColor(R.color.primary));
-        textTotalPrevisto.setBackgroundColor(previsto < 0 ? getResources().getColor(R.color.theme_red_primary) : getResources().getColor(R.color.primary));
     }
 }

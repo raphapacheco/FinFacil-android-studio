@@ -5,6 +5,6 @@
           android:drawable="@drawable/tab_bar_sem_foco"/>
     <item android:state_focused="false" android:state_selected="true" android:state_pressed="false"
           android:drawable="@drawable/tab_bar_selecionada"/>
-    <item android:state_selected="false" android:state_pressed="true" android:drawable="@color/primary_dark"/>
-    <item android:state_selected="true" android:state_pressed="true" android:drawable="@color/primary"/>
+    <item android:state_selected="false" android:state_pressed="true" android:drawable="@color/preto_marron_escuro"/>
+    <item android:state_selected="true" android:state_pressed="true" android:drawable="@color/preto_marron"/>
 </selector>

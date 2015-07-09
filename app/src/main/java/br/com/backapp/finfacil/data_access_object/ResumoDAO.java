@@ -52,9 +52,9 @@ public class ResumoDAO {
         this.database.delete(NOME_DA_TABELA, "_id = ?", new String[]{""+resumo.getId()});
     }
 
-    public ArrayList<Resumo> obterTodosNaDataAtual() {
+    public ArrayList<Resumo> obterTodosNaDataAtual(boolean ordenarPorDataDesc) {
         ArrayList<Resumo> lancamentos = new ArrayList<Resumo>();
-        Cursor cursor = this.database.query(NOME_DA_TABELA, null, "data BETWEEN ? and ?", Recursos.whereBetweenMesAtual(), null, null, "data");
+        Cursor cursor = this.database.query(NOME_DA_TABELA, null, "data BETWEEN ? and ?", Recursos.whereBetweenMesAtual(), null, null, ordenarPorDataDesc ? "data desc" : "data");
         cursor.moveToFirst();
 
         for (int i = 0; i < cursor.getCount(); i++) {

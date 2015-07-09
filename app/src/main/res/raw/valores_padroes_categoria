@@ -1,16 +1,32 @@
-INSERT INTO categoria('descricao') VALUES
-    ('Alimentação'),
-    ('Aluguel'),
-    ('Automóvel'),
-    ('Casa'),
-    ('Combustível'),
-    ('Compras'),
-    ('Contas'),
-    ('Educação'),
-    ('Investimentos'),
-    ('Lazer'),
-    ('Outros'),
-    ('Recebimentos'),
-    ('Salário'),
-    ('Saúde'),
-    ('Vestuário')
+INSERT INTO categoria('descricao') VALUES('Alimentação')
+INSERT INTO categoria('descricao') VALUES('Aluguel')
+INSERT INTO categoria('descricao') VALUES('Automóvel')
+INSERT INTO categoria('descricao') VALUES('Casa')
+INSERT INTO categoria('descricao') VALUES('Combustível')
+INSERT INTO categoria('descricao') VALUES('Compras')
+INSERT INTO categoria('descricao') VALUES('Contas')
+INSERT INTO categoria('descricao') VALUES('Educação')
+INSERT INTO categoria('descricao') VALUES('Investimentos')
+INSERT INTO categoria('descricao') VALUES('Lazer')
+INSERT INTO categoria('descricao') VALUES('Outros')
+INSERT INTO categoria('descricao') VALUES('Recebimentos')
+INSERT INTO categoria('descricao') VALUES('Salário')
+INSERT INTO categoria('descricao') VALUES('Saúde')
+INSERT INTO categoria('descricao') VALUES('Vestuário')
+
+--INSERT INTO categoria('descricao') VALUES
+--    ('Alimentação'),
+--    ('Aluguel'),
+--    ('Automóvel'),
+--    ('Casa'),
+--    ('Combustível'),
+--    ('Compras'),
+--    ('Contas'),
+--    ('Educação'),
+--    ('Investimentos'),
+--    ('Lazer'),
+--    ('Outros'),
+--    ('Recebimentos'),
+--    ('Salário'),
+--    ('Saúde'),
+--    ('Vestuário')

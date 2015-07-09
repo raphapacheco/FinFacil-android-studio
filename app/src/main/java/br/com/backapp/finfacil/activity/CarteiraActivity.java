@@ -134,7 +134,7 @@ public class CarteiraActivity extends ActionBarActivity {
 
     private void configurarActionBar() {
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setIcon(R.drawable.ic_launcher);
+        actionBar.setIcon(R.mipmap.ic_launcher);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeButtonEnabled(true);
     }
