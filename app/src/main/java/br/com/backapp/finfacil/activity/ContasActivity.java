@@ -320,8 +320,8 @@ public class ContasActivity extends ActionBarActivity {
         carteiras = carteiraDAO.obterTodosNaDataAtual(configuracoes.getOrdenacaoLancamentos() == 1);
         totalCarteira = carteiraDAO.obterTotalCarteira();
         totalCarteiraPrevisto = carteiraDAO.obterTotalCarteiraPrevisto();
-        totalCarteiraAnterior = resumoDAO.obterTotalAnterior(carteiraDAO.NOME_DA_TABELA);
-        totalResumoAnterior = resumoDAO.obterTotalAnterior(resumoDAO.NOME_DA_TABELA);
+        totalCarteiraAnterior = carteiraDAO.obterTotalCarteiraAnterior();
+        totalResumoAnterior = resumoDAO.obterTotalContaCorrenteAnterior();
         totalCarteiraPrevistoAnterior = carteiraDAO.obterTotalCarteiraPrevistoAnterior();
         cartaos = cartaoDAO.obterTodosNaDataAtual(configuracoes.getOrdenacaoLancamentos() == 1);
         totalCartao = cartaoDAO.obterTotalCartao();

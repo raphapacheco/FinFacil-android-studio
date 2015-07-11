@@ -119,9 +119,9 @@ public class ResumoDAO {
         return valor;
     }
 
-    public double obterTotalAnterior(String nomeTabela){
+    public double obterTotalContaCorrenteAnterior(){
         double valor = 0;
-        Cursor cursor = this.database.rawQuery("SELECT SUM(valor) FROM " + nomeTabela + " WHERE (data < ?) and (previsao = 0) ", Recursos.whereMesAtual());
+        Cursor cursor = this.database.rawQuery("SELECT SUM(valor) FROM " + NOME_DA_TABELA + " WHERE (data < ?) and (previsao = 0) ", Recursos.whereMesAtual());
 
         if (cursor != null) {
             if (cursor.moveToFirst()) {
