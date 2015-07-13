@@ -8,15 +8,13 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.TranslateAnimation;
 import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
@@ -24,8 +22,6 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -74,6 +70,7 @@ public class ContasActivity extends ActionBarActivity {
     private double totalCarteiraPrevisto = 0;
     private double totalCartao = 0;
     private double totalCarteiraAnterior = 0;
+    private double totalResumoAnterior = 0;
     private double totalCarteiraPrevistoAnterior = 0;
     private Integer posicaoItemSelecionado = -1;
     private MenuItem menuData;
@@ -324,6 +321,7 @@ public class ContasActivity extends ActionBarActivity {
         totalCarteira = carteiraDAO.obterTotalCarteira();
         totalCarteiraPrevisto = carteiraDAO.obterTotalCarteiraPrevisto();
         totalCarteiraAnterior = carteiraDAO.obterTotalCarteiraAnterior();
+        totalResumoAnterior = resumoDAO.obterTotalContaCorrenteAnterior();
         totalCarteiraPrevistoAnterior = carteiraDAO.obterTotalCarteiraPrevistoAnterior();
         cartaos = cartaoDAO.obterTodosNaDataAtual(configuracoes.getOrdenacaoLancamentos() == 1);
         totalCartao = cartaoDAO.obterTotalCartao();
@@ -349,6 +347,13 @@ public class ContasActivity extends ActionBarActivity {
         resumoCartao.setValor(totalCartao * -1);
         resumoCartao.setData(Recursos.dataAtualString());
         resumos.add(1, resumoCartao);
+
+        Resumo saldoResumoAnterior = new Resumo();
+        saldoResumoAnterior.setId(-3);
+        saldoResumoAnterior.setDescricao(this.getResources().getString(R.string.text_saldo_anterior));
+        saldoResumoAnterior.setValor(totalResumoAnterior);
+        saldoResumoAnterior.setData(Recursos.dataAtualString());
+        resumos.add(2, saldoResumoAnterior);
 
         Carteira saldoCarteiraAnterior = new Carteira();
         saldoCarteiraAnterior.setId(-1);

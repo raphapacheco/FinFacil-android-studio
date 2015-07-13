@@ -118,4 +118,18 @@ public class ResumoDAO {
 
         return valor;
     }
+
+    public double obterTotalContaCorrenteAnterior(){
+        double valor = 0;
+        Cursor cursor = this.database.rawQuery("SELECT SUM(valor) FROM " + NOME_DA_TABELA + " WHERE (data < ?) and (previsao = 0) ", Recursos.whereMesAtual());
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                valor = cursor.getDouble(0);
+            }
+            cursor.close();
+        }
+
+        return valor;
+    }
 }
