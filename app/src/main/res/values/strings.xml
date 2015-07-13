@@ -8,6 +8,7 @@
     <string name="action_visao_totalizador">Visão do totalizador</string>
     <string name="action_ordenar_lancamentos_asc">Por data crescente</string>
     <string name="action_ordenar_lancamentos_desc">Por data decrescente</string>
+    <string name="action_grafico">Gráficos</string>
 
     <string name="text_salvar">Salvar</string>
     <string name="text_cancelar">Cancelar</string>
@@ -69,5 +70,8 @@
     <string name="text_visao_mensal">Mensal</string>
     <string name="text_visao_mensal_total">Mensal total</string>
     <string name="text_visao_mensal_previsao">Mensal previsão</string>
+    <string name="title_activity_grafico">GraficoActivity</string>
+
+    <string name="hello_world">Hello world!</string>
 
 </resources>

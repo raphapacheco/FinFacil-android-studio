@@ -213,6 +213,11 @@ public class ContasActivity extends ActionBarActivity {
             return true;
         }
 
+        if (id == R.id.action_grafico) {
+            Intent intent = new Intent(ContasActivity.this, GraficoActivity.class);
+            startActivity(intent);
+        }
+
         return super.onOptionsItemSelected(item);
     }//onOptionsItemSelected
 
