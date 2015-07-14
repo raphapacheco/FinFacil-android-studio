@@ -72,6 +72,7 @@ public class ContasActivity extends ActionBarActivity {
     private double totalCarteiraAnterior = 0;
     private double totalResumoAnterior = 0;
     private double totalCarteiraPrevistoAnterior = 0;
+    private double totalResumoPrevistoAnterior =0;
     private Integer posicaoItemSelecionado = -1;
     private MenuItem menuData;
     private Resumo resumoSelecionado;
@@ -317,18 +318,23 @@ public class ContasActivity extends ActionBarActivity {
         resumos = resumoDAO.obterTodosNaDataAtual(configuracoes.getOrdenacaoLancamentos() == 1);
         totalResumo = resumoDAO.obterTotalResumo();
         totalResumoPrevisto = resumoDAO.obterTotalResumoPrevisto();
+        totalResumoAnterior = resumoDAO.obterTotalContaCorrenteAnterior();
+        totalResumoPrevistoAnterior = resumoDAO.obterTotalContaCorrentePrevistoAnterior();
+
         carteiras = carteiraDAO.obterTodosNaDataAtual(configuracoes.getOrdenacaoLancamentos() == 1);
         totalCarteira = carteiraDAO.obterTotalCarteira();
         totalCarteiraPrevisto = carteiraDAO.obterTotalCarteiraPrevisto();
         totalCarteiraAnterior = carteiraDAO.obterTotalCarteiraAnterior();
-        totalResumoAnterior = resumoDAO.obterTotalContaCorrenteAnterior();
         totalCarteiraPrevistoAnterior = carteiraDAO.obterTotalCarteiraPrevistoAnterior();
+
         cartaos = cartaoDAO.obterTodosNaDataAtual(configuracoes.getOrdenacaoLancamentos() == 1);
         totalCartao = cartaoDAO.obterTotalCartao();
 
         if (configuracoes.getModoVisualizacao() < 3) {
             totalCarteira += totalCarteiraAnterior;
             totalCarteiraPrevisto += totalCarteiraPrevistoAnterior;
+            totalResumo += totalResumoAnterior;
+            totalResumoPrevisto += totalResumoPrevistoAnterior;
         }
 
         totalResumo += totalCarteira - totalCartao;
@@ -476,8 +482,11 @@ public class ContasActivity extends ActionBarActivity {
         this.listViewResumo.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
            @Override
            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+               ListAdapter adapter = ContasActivity.this.listViewResumo.getAdapter();
+               Resumo resumo = (Resumo) adapter.getItem(position);
+
                //negativo não mostra o context menu
-               if (position < 2) {
+               if (resumo.getId() < 0) {
                    resumoSelecionado = null;
                    posicaoItemSelecionado = -1;
                }
@@ -492,8 +501,11 @@ public class ContasActivity extends ActionBarActivity {
         this.listViewCarteira.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+                ListAdapter adapter = ContasActivity.this.listViewCarteira.getAdapter();
+                Carteira carteira = (Carteira) adapter.getItem(position);
+
                 //negativo não mostra o context menu
-                if (position < 1) {
+                if (carteira.getId() < 0) {
                     carteiraSelecionado = null;
                     posicaoItemSelecionado = -1;
                 }

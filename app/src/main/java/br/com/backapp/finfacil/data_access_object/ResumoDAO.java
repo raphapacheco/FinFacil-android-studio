@@ -45,11 +45,11 @@ public class ResumoDAO {
         valores.put("categoria_id", resumo.getCategoria_id());
         valores.put("previsao", resumo.isPrevisao());
 
-        this.database.update(NOME_DA_TABELA, valores, "_id = ?", new String[]{""+resumo.getId()});
+        this.database.update(NOME_DA_TABELA, valores, "_id = ?", new String[]{"" + resumo.getId()});
     }
 
     public void deletar(Resumo resumo){
-        this.database.delete(NOME_DA_TABELA, "_id = ?", new String[]{""+resumo.getId()});
+        this.database.delete(NOME_DA_TABELA, "_id = ?", new String[]{"" + resumo.getId()});
     }
 
     public ArrayList<Resumo> obterTodosNaDataAtual(boolean ordenarPorDataDesc) {
@@ -122,6 +122,20 @@ public class ResumoDAO {
     public double obterTotalContaCorrenteAnterior(){
         double valor = 0;
         Cursor cursor = this.database.rawQuery("SELECT SUM(valor) FROM " + NOME_DA_TABELA + " WHERE (data < ?) and (previsao = 0) ", Recursos.whereMesAtual());
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                valor = cursor.getDouble(0);
+            }
+            cursor.close();
+        }
+
+        return valor;
+    }
+
+    public double obterTotalContaCorrentePrevistoAnterior(){
+        double valor = 0;
+        Cursor cursor = this.database.rawQuery("SELECT SUM(valor) FROM " + NOME_DA_TABELA + " WHERE (data < ?)", Recursos.whereMesAtual());
 
         if (cursor != null) {
             if (cursor.moveToFirst()) {
