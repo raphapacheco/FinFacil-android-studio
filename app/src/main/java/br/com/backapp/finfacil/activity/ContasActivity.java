@@ -72,7 +72,7 @@ public class ContasActivity extends ActionBarActivity {
     private double totalCarteiraAnterior = 0;
     private double totalResumoAnterior = 0;
     private double totalCarteiraPrevistoAnterior = 0;
-    private double totalResumoPrevistoAnterior =0;
+    private double totalResumoPrevistoAnterior = 0;
     private Integer posicaoItemSelecionado = -1;
     private MenuItem menuData;
     private Resumo resumoSelecionado;
@@ -337,8 +337,8 @@ public class ContasActivity extends ActionBarActivity {
             totalResumoPrevisto += totalResumoPrevistoAnterior;
         }
 
-        totalResumo += totalCarteira - totalCartao;
-        totalResumoPrevisto += totalCarteiraPrevisto - totalCartao;
+        totalResumo += totalCarteira;
+        totalResumoPrevisto += totalCarteiraPrevisto;
 
         Resumo resumoCarteira = new Resumo();
         resumoCarteira.setId(-1);
