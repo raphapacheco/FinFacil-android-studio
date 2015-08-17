@@ -1,0 +1,106 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="br.com.backapp.finfacil.activity.GraficoActivity">
+
+    <android.support.v7.widget.CardView
+        style="@style/CardViewSimple"
+        cardCornerRadius="4dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/tamanho_texto"
+                    android:paddingTop="8dp"
+                    android:paddingLeft="8dp"
+                    android:paddingBottom="6dp"
+                    android:text="Total:"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/tamanho_texto"
+                    android:paddingTop="8dp"
+                    android:paddingLeft="8dp"
+                    android:paddingBottom="6dp"
+                    android:text="Conta corrente:"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/tamanho_texto"
+                    android:paddingTop="8dp"
+                    android:paddingLeft="8dp"
+                    android:paddingBottom="6dp"
+                    android:text="Carteira:"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/tamanho_texto"
+                    android:paddingTop="8dp"
+                    android:paddingLeft="8dp"
+                    android:paddingBottom="6dp"
+                    android:text="Cartão:"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/total"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/tamanho_texto"
+                    android:paddingTop="8dp"
+                    android:paddingLeft="8dp"
+                    android:paddingBottom="6dp"
+                    android:text="R$ 0,00"/>
+
+                <TextView
+                    android:id="@+id/contaCorrente"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/tamanho_texto"
+                    android:paddingTop="8dp"
+                    android:paddingLeft="8dp"
+                    android:paddingBottom="6dp"
+                    android:text="R$ 0,00"/>
+
+                <TextView
+                    android:id="@+id/carteira"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/tamanho_texto"
+                    android:paddingTop="8dp"
+                    android:paddingLeft="8dp"
+                    android:paddingBottom="6dp"
+                    android:text="R$ 0,00"/>
+
+                <TextView
+                    android:id="@+id/cartao"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/tamanho_texto"
+                    android:paddingTop="8dp"
+                    android:paddingLeft="8dp"
+                    android:paddingBottom="6dp"
+                    android:text="R$ 0,00"/>
+            </LinearLayout>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+</LinearLayout>

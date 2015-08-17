@@ -45,11 +45,11 @@ public class CarteiraDAO {
         valores.put("categoria_id", carteira.getCategoria_id());
         valores.put("previsao", carteira.isPrevisao());
 
-        this.database.update(NOME_DA_TABELA, valores, "_id = ?", new String[]{""+carteira.getId()});
+        this.database.update(NOME_DA_TABELA, valores, "_id = ?", new String[]{"" + carteira.getId()});
     }
 
     public void deletar(Carteira carteira){
-        this.database.delete(NOME_DA_TABELA, "_id = ?", new String[]{""+carteira.getId()});
+        this.database.delete(NOME_DA_TABELA, "_id = ?", new String[]{"" + carteira.getId()});
     }
 
     public ArrayList<Carteira> obterTodosNaDataAtual(boolean ordenarPorDataDesc) {
@@ -94,6 +94,20 @@ public class CarteiraDAO {
     public double obterTotalCarteira(){
         double valor = 0;
         Cursor cursor = this.database.rawQuery("SELECT SUM(valor) FROM " + NOME_DA_TABELA + " WHERE (data between ? and ?) and (previsao = 0)", Recursos.whereBetweenMesAtual());
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                valor = cursor.getDouble(0);
+            }
+            cursor.close();
+        }
+
+        return valor;
+    }
+
+    public double obterTotal(){
+        double valor = 0;
+        Cursor cursor = this.database.rawQuery("SELECT SUM(valor) FROM " + NOME_DA_TABELA + " WHERE (previsao = 0)", null);
 
         if (cursor != null) {
             if (cursor.moveToFirst()) {

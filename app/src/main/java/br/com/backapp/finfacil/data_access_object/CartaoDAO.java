@@ -45,11 +45,11 @@ public class CartaoDAO {
         valores.put("parcela", cartao.getParcela());
         valores.put("categoria_id", cartao.getCategoria_id());
 
-        this.database.update(NOME_DA_TABELA, valores, "_id = ?", new String[]{""+cartao.getId()});
+        this.database.update(NOME_DA_TABELA, valores, "_id = ?", new String[]{"" + cartao.getId()});
     }
 
     public void deletar(Cartao cartao){
-        this.database.delete(NOME_DA_TABELA, "_id = ?", new String[]{""+cartao.getId()});
+        this.database.delete(NOME_DA_TABELA, "_id = ?", new String[]{"" + cartao.getId()});
     }
 
     public ArrayList<Cartao> obterTodosNaDataAtual(boolean ordenarPorDataDesc) {
@@ -94,6 +94,20 @@ public class CartaoDAO {
     public double obterTotalCartao(){
         double valor = 0;
         Cursor cursor = this.database.rawQuery("SELECT SUM(valor) FROM " + NOME_DA_TABELA + " WHERE data between ? and ?", Recursos.whereBetweenMesAtual());
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                valor = cursor.getDouble(0);
+            }
+            cursor.close();
+        }
+
+        return valor;
+    }
+
+    public double obterTotal(){
+        double valor = 0;
+        Cursor cursor = this.database.rawQuery("SELECT SUM(valor) FROM " + NOME_DA_TABELA, null);
 
         if (cursor != null) {
             if (cursor.moveToFirst()) {

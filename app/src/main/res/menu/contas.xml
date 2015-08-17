@@ -26,4 +26,10 @@
         android:icon="@drawable/ic_action_settings"
         app:showAsAction="always" />
 
+    <item android:id="@+id/action_grafico"
+        android:title="@string/action_grafico"
+        android:hint="@string/action_grafico"
+        android:icon="@drawable/ic_action_network_cell"
+        app:showAsAction="always" />
+
 </menu>

@@ -105,6 +105,20 @@ public class ResumoDAO {
         return valor;
     }
 
+    public double obterTotal(){
+        double valor = 0;
+        Cursor cursor = this.database.rawQuery("SELECT SUM(valor) FROM " + NOME_DA_TABELA + " WHERE (previsao = 0)", null);
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                valor = cursor.getDouble(0);
+            }
+            cursor.close();
+        }
+
+        return valor;
+    }
+
     public double obterTotalResumoPrevisto(){
         double valor = 0;
         Cursor cursor = this.database.rawQuery("SELECT SUM(valor) FROM " + NOME_DA_TABELA + " WHERE (data between ? and ?)", Recursos.whereBetweenMesAtual());
