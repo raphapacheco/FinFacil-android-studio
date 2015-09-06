@@ -17,8 +17,8 @@
     <string name="hint_parcelas">Número de Parecelas</string>
     <string name="hint_dia_fechamento_cartao">Selecione o dia!</string>
     <string name="text_data">Data:</string>
-    <string name="text_moeda">R$:</string>
-    <string name="text_moeda_para_formatacao">R$: %.2f</string>
+    <string name="text_moeda">R$</string>
+    <string name="text_moeda_para_formatacao">R$ %.2f</string>
 
     <string name="text_configuracao">Configurações</string>
     <string name="text_salario">Salário</string>
@@ -53,12 +53,13 @@
 
 
     <!-- Tabs Labels -->
-    <string name="list_view_resumo">Conta</string>
+    <string name="view_resumo">Resumo</string>
+    <string name="list_view_conta">Conta</string>
     <string name="list_view_carteira">Carteira</string>
     <string name="list_view_cartao">Cartão</string>
 
     <!-- Text activities -->
-    <string name="text_resumo">Conta</string>
+    <string name="text_conta">Conta</string>
     <string name="text_carteira">Carteira</string>
     <string name="text_cartao">Cartão</string>
 

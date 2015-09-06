@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.CardView
+        style="@style/CardViewSimple"
+        android:layout_marginTop="10dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        cardCornerRadius="4dp">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/view_resumo_total"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:layout_weight="2"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_green"/>
+
+            <TextView
+                android:id="@+id/view_resumo_total_previsto"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:layout_weight="2"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_green"/>
+
+            <TextView
+                android:id="@+id/view_resumo_total_cartao"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:layout_weight="1"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_green" />
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        style="@style/CardViewSimple"
+        android:layout_marginTop="10dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        cardCornerRadius="4dp">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/view_resumo_texto_total"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:layout_weight="2"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:text="@string/text_total"/>
+
+            <TextView
+                android:id="@+id/view_resumo_total_conta"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1"
+                android:textSize="16sp"
+                android:textColor="@color/text_green" />
+
+            <TextView
+                android:id="@+id/view_resumo_total_carteira"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1"
+                android:textSize="16sp"
+                android:textColor="@color/text_green" />
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        style="@style/CardViewSimple"
+        android:layout_marginTop="10dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        cardCornerRadius="4dp">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/view_resumo_texto_total_previsao"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:layout_weight="2"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:text="@string/text_total_previsao"/>
+
+            <TextView
+                android:id="@+id/view_resumo_total_conta_previsto"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="2"
+                android:textSize="16sp"
+                android:textColor="@color/text_green"/>
+
+            <TextView
+                android:id="@+id/view_resumo_total_carteira_previsto"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="2"
+                android:textSize="16sp"
+                android:textColor="@color/text_green"/>
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

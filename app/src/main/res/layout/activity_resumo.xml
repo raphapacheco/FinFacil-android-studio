@@ -1,175 +1,111 @@
-<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <ScrollView
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:fillViewport="true"
-        android:scrollbars = "vertical">
-        <LinearLayout
+        android:layout_alignParentTop="false"
+        android:layout_above="@+id/activity_contas_card"
+        android:id="@+id/linearLayout_abas">
+
+        <TabHost
+            android:id="@android:id/tabhost"
             android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical" >
+
+                <TabWidget
+                    android:id="@android:id/tabs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <FrameLayout
+                    android:id="@android:id/tabcontent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:id="@+id/view_resumo"
+                        android:layout_width="fill_parent"
+                        android:layout_height="match_parent" />
+
+                    <ListView
+                        android:id="@+id/list_view_conta"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <ListView
+                        android:id="@+id/list_view_carteira"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <ListView
+                        android:id="@+id/list_view_cartao"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                </FrameLayout>
+
+            </LinearLayout>
+
+        </TabHost>
+
+    </LinearLayout>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/activity_contas_card"
+        style="@style/CardViewSimple"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        cardCornerRadius="4dp"
+        android:layout_alignParentBottom="true">
+
+        <LinearLayout android:id="@+id/linearLayout_total"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_alignParentBottom="true" >
 
-            <android.support.v7.widget.CardView
-                style="@style/CardViewSimple"
-                android:layout_marginTop="10dp"
+            <TextView
+                android:id="@+id/activity_contas_total"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                cardCornerRadius="4dp">
+                android:padding="5dp"
+                android:layout_weight="1"
+                android:textSize="16sp"
+                android:textColor="@color/text_green" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <EditText
-                        android:id="@+id/edit_descricao_resumo"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginRight="5dp"
-                        android:hint="@string/hint_descricao"
-                        android:inputType="textCapSentences" />
-
-                    <EditText
-                        android:id="@+id/edit_valor_resumo"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginRight="5dp"
-                        android:hint="@string/hint_valor"
-                        android:inputType="numberDecimal" />
-
-                </LinearLayout>
-
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-                style="@style/CardViewSimple"
+            <TextView
+                android:id="@+id/activity_contas_total_previsto"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                cardCornerRadius="4dp">
+                android:padding="5dp"
+                android:layout_weight="2"
+                android:textSize="16sp"
+                android:textColor="@color/text_green"/>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <RadioGroup
-                        android:id="@+id/radioGroup_lancamento_resumo"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content">
-
-                        <RadioButton
-                            android:id="@+id/radioButton_debito_resumo"
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/margem_radio_button"
-                            android:text="@string/text_debito"
-                            android:checked="true" />
-
-                        <RadioButton
-                            android:id="@+id/radioButton_credito_resumo"
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/margem_radio_button"
-                            android:text="@string/text_credito" />
-                    </RadioGroup>
-
-                    <CheckBox
-                        android:id="@+id/check_previsao_resumo"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/text_previsao" />
-                </LinearLayout>
-
-            </android.support.v7.widget.CardView>
-
-            <android.support.v7.widget.CardView
-                style="@style/CardViewSimple"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                cardCornerRadius="4dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-                        <TextView
-                            android:id="@+id/text_categoria_resumo"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/text_categoria"
-                            android:textSize="@dimen/tamanho_texto"
-                            android:paddingTop="8dp"
-                            android:paddingLeft="8dp"
-                            android:paddingBottom="6dp" />
-
-                        <Spinner
-                            android:id="@+id/spinner_categoria_resumo"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"/>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-                        <TextView
-                            android:id="@+id/text_repetir_resumo"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/text_repetir_lancamento"
-                            android:textSize="@dimen/tamanho_texto"
-                            android:paddingTop="8dp"
-                            android:paddingLeft="8dp"
-                            android:paddingBottom="6dp" />
-
-                        <Spinner
-                            android:id="@+id/spinner_repetir_resumo"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-                        <TextView
-                            android:id="@+id/text_texto_data_resumo"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/text_data"
-                            android:textSize="@dimen/tamanho_texto"
-                            android:paddingTop="8dp"
-                            android:paddingLeft="8dp"
-                            android:paddingBottom="6dp" />
-
-                        <TextView
-                            android:id="@+id/text_data_resumo"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Campo para data"
-                            android:textColor="@color/grey"
-                            android:textSize="@dimen/tamanho_texto"
-                            style="@android:style/Widget.Holo.Light.Spinner"
-                            android:paddingTop="8dp"
-                            android:paddingLeft="8dp"
-                            android:paddingBottom="6dp" />
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </android.support.v7.widget.CardView>
         </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <com.getbase.floatingactionbutton.AddFloatingActionButton
+        android:id="@+id/botao_adicionar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        fab:fab_plusIconColor="@color/white"
+        fab:fab_colorNormal="@color/action_button_color"
+        fab:fab_colorPressed="@color/action_button_pressed"
+        fab:fab_size="normal"
+        android:layout_above="@+id/activity_contas_card"
+        android:layout_alignRight="@+id/activity_contas_card"
+        android:layout_alignEnd="@+id/activity_contas_card" />
+
+</RelativeLayout>

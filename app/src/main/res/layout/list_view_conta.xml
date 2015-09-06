@@ -6,7 +6,7 @@
     android:layout_height="fill_parent">
 
     <TextView
-        android:id="@+id/list_view_resumo_data"
+        android:id="@+id/list_view_conta_data"
         android:layout_width="40dp"
         android:layout_height="wrap_content"
         android:gravity="center_vertical|center_horizontal"
@@ -15,18 +15,18 @@
         android:textSize="10sp"
         android:layout_alignParentLeft="true" />
     <TextView
-        android:id="@+id/list_view_resumo_descricao"
+        android:id="@+id/list_view_conta_descricao"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:textColor="@color/black"
         android:padding="10dp"
         android:textSize="16sp"
-        android:layout_toRightOf="@+id/list_view_resumo_data"
-        android:layout_toLeftOf="@+id/list_view_resumo_valor"
-        android:layout_toStartOf="@+id/list_view_resumo_valor"/>
+        android:layout_toRightOf="@+id/list_view_conta_data"
+        android:layout_toLeftOf="@+id/list_view_conta_valor"
+        android:layout_toStartOf="@+id/list_view_conta_valor"/>
     <TextView
-        android:id="@+id/list_view_resumo_valor"
+        android:id="@+id/list_view_conta_valor"
         android:layout_width="180dp"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"

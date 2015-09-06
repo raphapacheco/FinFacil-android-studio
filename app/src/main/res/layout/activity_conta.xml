@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:fillViewport="true"
+        android:scrollbars = "vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.CardView
+                style="@style/CardViewSimple"
+                android:layout_marginTop="10dp"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                cardCornerRadius="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <EditText
+                        android:id="@+id/edit_descricao_conta"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginRight="5dp"
+                        android:hint="@string/hint_descricao"
+                        android:inputType="textCapSentences" />
+
+                    <EditText
+                        android:id="@+id/edit_valor_conta"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginRight="5dp"
+                        android:hint="@string/hint_valor"
+                        android:inputType="numberDecimal" />
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                style="@style/CardViewSimple"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                cardCornerRadius="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <RadioGroup
+                        android:id="@+id/radioGroup_lancamento_conta"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content">
+
+                        <RadioButton
+                            android:id="@+id/radioButton_debito_conta"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/margem_radio_button"
+                            android:text="@string/text_debito"
+                            android:checked="true" />
+
+                        <RadioButton
+                            android:id="@+id/radioButton_credito_conta"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/margem_radio_button"
+                            android:text="@string/text_credito" />
+                    </RadioGroup>
+
+                    <CheckBox
+                        android:id="@+id/check_previsao_conta"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/text_previsao" />
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                style="@style/CardViewSimple"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                cardCornerRadius="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/text_categoria_conta"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/text_categoria"
+                            android:textSize="@dimen/tamanho_texto"
+                            android:paddingTop="8dp"
+                            android:paddingLeft="8dp"
+                            android:paddingBottom="6dp" />
+
+                        <Spinner
+                            android:id="@+id/spinner_categoria_conta"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/text_repetir_conta"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/text_repetir_lancamento"
+                            android:textSize="@dimen/tamanho_texto"
+                            android:paddingTop="8dp"
+                            android:paddingLeft="8dp"
+                            android:paddingBottom="6dp" />
+
+                        <Spinner
+                            android:id="@+id/spinner_repetir_conta"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/text_texto_data_conta"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/text_data"
+                            android:textSize="@dimen/tamanho_texto"
+                            android:paddingTop="8dp"
+                            android:paddingLeft="8dp"
+                            android:paddingBottom="6dp" />
+
+                        <TextView
+                            android:id="@+id/text_data_conta"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Campo para data"
+                            android:textColor="@color/grey"
+                            android:textSize="@dimen/tamanho_texto"
+                            style="@android:style/Widget.Holo.Light.Spinner"
+                            android:paddingTop="8dp"
+                            android:paddingLeft="8dp"
+                            android:paddingBottom="6dp" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

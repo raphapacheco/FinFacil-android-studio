@@ -8,7 +8,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".activity.ContasActivity"
+            android:name=".activity.ResumoActivity"
             android:label="@string/app_name"
             android:icon="@mipmap/ic_launcher">
 
@@ -19,8 +19,8 @@
             </intent-filter>
         </activity>
     <activity
-        android:name=".activity.ResumoActivity"
-        android:label="@string/text_resumo" >
+        android:name=".activity.ContaActivity"
+        android:label="@string/text_conta" >
     </activity>
     <activity
         android:name=".activity.CarteiraActivity"

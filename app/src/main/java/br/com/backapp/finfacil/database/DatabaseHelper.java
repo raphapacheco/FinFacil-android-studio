@@ -12,9 +12,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import br.com.backapp.finfacil.R;
-import br.com.backapp.finfacil.data_access_object.CartaoDAO;
-import br.com.backapp.finfacil.data_access_object.CarteiraDAO;
-import br.com.backapp.finfacil.data_access_object.ResumoDAO;
 
 /**
  * Created by raphael on 20/02/2015.

@@ -6,13 +6,13 @@ import android.database.sqlite.SQLiteDatabase;
 
 import java.util.ArrayList;
 
-import br.com.backapp.finfacil.model.Resumo;
+import br.com.backapp.finfacil.model.Conta;
 import br.com.backapp.finfacil.resources.Recursos;
 
 /**
  * Created by raphael on 20/02/2015.
  */
-public class ResumoDAO {
+public class ContaDAO {
     public static String NOME_DA_TABELA = "resumo";
     private int COLUNA_ID = 0;
     private int COLUNA_DESCRICAO = 1;
@@ -22,50 +22,50 @@ public class ResumoDAO {
     private int COLUNA_PREVISAO = 5;
     private SQLiteDatabase database;
 
-    public ResumoDAO(SQLiteDatabase database) {
+    public ContaDAO(SQLiteDatabase database) {
         this.database = database;
     }
 
-    public void inserir(Resumo resumo){
+    public void inserir(Conta conta){
         ContentValues valores = new ContentValues();
-        valores.put("descricao", resumo.getDescricao());
-        valores.put("valor", resumo.getValor());
-        valores.put("data", resumo.getData());
-        valores.put("categoria_id", resumo.getCategoria_id());
-        valores.put("previsao", resumo.isPrevisao());
+        valores.put("descricao", conta.getDescricao());
+        valores.put("valor", conta.getValor());
+        valores.put("data", conta.getData());
+        valores.put("categoria_id", conta.getCategoria_id());
+        valores.put("previsao", conta.isPrevisao());
 
         this.database.insert(NOME_DA_TABELA, null, valores);
     }
 
-    public void atualizar(Resumo resumo){
+    public void atualizar(Conta conta){
         ContentValues valores = new ContentValues();
-        valores.put("descricao", resumo.getDescricao());
-        valores.put("valor", resumo.getValor());
-        valores.put("data", resumo.getData());
-        valores.put("categoria_id", resumo.getCategoria_id());
-        valores.put("previsao", resumo.isPrevisao());
+        valores.put("descricao", conta.getDescricao());
+        valores.put("valor", conta.getValor());
+        valores.put("data", conta.getData());
+        valores.put("categoria_id", conta.getCategoria_id());
+        valores.put("previsao", conta.isPrevisao());
 
-        this.database.update(NOME_DA_TABELA, valores, "_id = ?", new String[]{"" + resumo.getId()});
+        this.database.update(NOME_DA_TABELA, valores, "_id = ?", new String[]{"" + conta.getId()});
     }
 
-    public void deletar(Resumo resumo){
-        this.database.delete(NOME_DA_TABELA, "_id = ?", new String[]{"" + resumo.getId()});
+    public void deletar(Conta conta){
+        this.database.delete(NOME_DA_TABELA, "_id = ?", new String[]{"" + conta.getId()});
     }
 
-    public ArrayList<Resumo> obterTodosNaDataAtual(boolean ordenarPorDataDesc) {
-        ArrayList<Resumo> lancamentos = new ArrayList<Resumo>();
+    public ArrayList<Conta> obterTodosNaDataAtual(boolean ordenarPorDataDesc) {
+        ArrayList<Conta> lancamentos = new ArrayList<Conta>();
         Cursor cursor = this.database.query(NOME_DA_TABELA, null, "data BETWEEN ? and ?", Recursos.whereBetweenMesAtual(), null, null, ordenarPorDataDesc ? "data desc" : "data");
         cursor.moveToFirst();
 
         for (int i = 0; i < cursor.getCount(); i++) {
-            Resumo resumo = new Resumo();
-            resumo.setId(cursor.getLong(COLUNA_ID));
-            resumo.setDescricao(cursor.getString(COLUNA_DESCRICAO));
-            resumo.setValor(cursor.getDouble(COLUNA_VALOR));
-            resumo.setData(cursor.getString(COLUNA_DATA));
-            resumo.setCategoria_id(cursor.getLong(COLUNA_CATEGORIA));
-            resumo.setPrevisao(cursor.getInt(COLUNA_PREVISAO) == 1);
-            lancamentos.add(resumo);
+            Conta conta = new Conta();
+            conta.setId(cursor.getLong(COLUNA_ID));
+            conta.setDescricao(cursor.getString(COLUNA_DESCRICAO));
+            conta.setValor(cursor.getDouble(COLUNA_VALOR));
+            conta.setData(cursor.getString(COLUNA_DATA));
+            conta.setCategoria_id(cursor.getLong(COLUNA_CATEGORIA));
+            conta.setPrevisao(cursor.getInt(COLUNA_PREVISAO) == 1);
+            lancamentos.add(conta);
             cursor.moveToNext();
         }
         cursor.close();
@@ -73,25 +73,25 @@ public class ResumoDAO {
         return lancamentos;
     }
 
-    public Resumo obterResumoOndeIdIgual(long id){
-        Resumo resumo = new Resumo();
+    public Conta obterContaOndeIdIgual(long id){
+        Conta conta = new Conta();
         Cursor cursor = this.database.query(NOME_DA_TABELA, null, "_id=?", new String[]{Long.toString(id)}, null, null, null);
         cursor.moveToFirst();
 
         if ( cursor.getCount() > 0){
-            resumo.setId(cursor.getLong(COLUNA_ID));
-            resumo.setDescricao(cursor.getString(COLUNA_DESCRICAO));
-            resumo.setValor(cursor.getDouble(COLUNA_VALOR));
-            resumo.setData(cursor.getString(COLUNA_DATA));
-            resumo.setCategoria_id(cursor.getLong(COLUNA_CATEGORIA));
-            resumo.setPrevisao(cursor.getInt(COLUNA_PREVISAO) == 1);
+            conta.setId(cursor.getLong(COLUNA_ID));
+            conta.setDescricao(cursor.getString(COLUNA_DESCRICAO));
+            conta.setValor(cursor.getDouble(COLUNA_VALOR));
+            conta.setData(cursor.getString(COLUNA_DATA));
+            conta.setCategoria_id(cursor.getLong(COLUNA_CATEGORIA));
+            conta.setPrevisao(cursor.getInt(COLUNA_PREVISAO) == 1);
         }
         cursor.close();
 
-        return resumo;
+        return conta;
     }
 
-    public double obterTotalResumo(){
+    public double obterTotalConta(){
         double valor = 0;
         Cursor cursor = this.database.rawQuery("SELECT SUM(valor) FROM " + NOME_DA_TABELA + " WHERE (data between ? and ?) and (previsao = 0)", Recursos.whereBetweenMesAtual());
 
@@ -105,7 +105,7 @@ public class ResumoDAO {
         return valor;
     }
 
-    public double obterTotalResumoPrevisto(){
+    public double obterTotalContaPrevisto(){
         double valor = 0;
         Cursor cursor = this.database.rawQuery("SELECT SUM(valor) FROM " + NOME_DA_TABELA + " WHERE (data between ? and ?)", Recursos.whereBetweenMesAtual());
 
@@ -119,7 +119,7 @@ public class ResumoDAO {
         return valor;
     }
 
-    public double obterTotalContaCorrenteAnterior(){
+    public double obterTotalContaAnterior(){
         double valor = 0;
         Cursor cursor = this.database.rawQuery("SELECT SUM(valor) FROM " + NOME_DA_TABELA + " WHERE (data < ?) and (previsao = 0) ", Recursos.whereMesAtual());
 
@@ -133,7 +133,7 @@ public class ResumoDAO {
         return valor;
     }
 
-    public double obterTotalContaCorrentePrevistoAnterior(){
+    public double obterTotalContaPrevistoAnterior(){
         double valor = 0;
         Cursor cursor = this.database.rawQuery("SELECT SUM(valor) FROM " + NOME_DA_TABELA + " WHERE (data < ?)", Recursos.whereMesAtual());
 

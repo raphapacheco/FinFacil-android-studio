@@ -1,241 +1,657 @@
 package br.com.backapp.finfacil.activity;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.view.ContextMenu;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
+import android.widget.AdapterView;
 import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.Spinner;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.getbase.floatingactionbutton.FloatingActionButton;
+
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 import br.com.backapp.finfacil.R;
-import br.com.backapp.finfacil.activity.spinner_adapter.CategoriaSpinnerAdapter;
-import br.com.backapp.finfacil.data_access_object.ResumoDAO;
+import br.com.backapp.finfacil.activity.list_view_adapter.CartaoListViewAdapter;
+import br.com.backapp.finfacil.activity.list_view_adapter.CarteiraListViewAdapter;
+import br.com.backapp.finfacil.activity.list_view_adapter.ContaListViewAdapter;
+import br.com.backapp.finfacil.data_access_object.CartaoDAO;
+import br.com.backapp.finfacil.data_access_object.CarteiraDAO;
+import br.com.backapp.finfacil.data_access_object.ContaDAO;
 import br.com.backapp.finfacil.database.DatabaseHelper;
-import br.com.backapp.finfacil.model.Categoria;
-import br.com.backapp.finfacil.model.Resumo;
+import br.com.backapp.finfacil.model.Cartao;
+import br.com.backapp.finfacil.model.Carteira;
+import br.com.backapp.finfacil.model.Conta;
+import br.com.backapp.finfacil.resources.Configuracoes;
 import br.com.backapp.finfacil.resources.Recursos;
 
-
-/**
- * Created by raphael on 22/02/2015.
- */
 public class ResumoActivity extends ActionBarActivity {
-    public static final String PARAMETRO_RESUMO_ID = "_id";
-    private Resumo resumo;
+    public static final String ABA_RESUMO_NOME = "Resumo";
+    public static final String ABA_CONTA_NOME = "Conta";
+    public static final String ABA_CARTEIRA_NOME = "Carteira";
+    public static final String ABA_CARTAO_NOME = "Cartao";
+    public static final String CONFIG_ABA_SELECIONADA = "CONFIG_ABA_SELECIONADA";
+    private Context context;
+    private ListView listViewConta;
+    private ListView listViewCarteira;
+    private ListView listViewCartao;
+    private TextView textTotal;
+    private TextView textTotalPrevisto;
+    private View cardTotal;
+    private View botaoAdicionar;
+    private LinearLayout linearLayoutTotal;
     private DatabaseHelper databaseHelper;
     private SQLiteDatabase base;
-    private long resumoIdSelecionado;
-    private EditText editDescricao;
-    private EditText editValor;
-    private RadioButton radioButtonCredito;
-    private Spinner spinnerRepetir;
-    private Spinner spinnerCategoria;
-    private TextView textData;
-    private CheckBox checkPrevisao;
-    private Date dataLancamento;
-    private Context context;
+    private ContaDAO contaDAO;
+    private CarteiraDAO carteiraDAO;
+    private CartaoDAO cartaoDAO;
+    private ArrayList<Conta> contas;
+    private ArrayList<Carteira> carteiras;
+    private ArrayList<Cartao> cartaos;
+    private String abaSelecionada;
+    private double totalConta = 0;
+    private double totalContaPrevisto = 0;
+    private double totalCarteira = 0;
+    private double totalCarteiraPrevisto = 0;
+    private double totalCartao = 0;
+    private double totalCarteiraAnterior = 0;
+    private double totalContaAnterior = 0;
+    private double totalCarteiraPrevistoAnterior = 0;
+    private double totalContaPrevistoAnterior = 0;
+    private Integer posicaoItemSelecionado = -1;
+    private MenuItem menuData;
+    private Conta contaSelecionado;
+    private Carteira carteiraSelecionado;
+    private Cartao cartaoSelecionado;
+    private Configuracoes configuracoes;
 
+    private LinearLayout viewResumo;
+    private TextView resumoTotal;
+    private TextView resumoTotalPrevisto;
+    private TextView resumoTotalConta;
+    private TextView resumoTotalContaPrevisto;
+    private TextView resumoTotalCarteria;
+    private TextView resumoTotalCarteriaPrevisto;
+    private TextView resumoTotalCartao;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_resumo);
+        this.context = getApplicationContext();
         this.databaseHelper = new DatabaseHelper(this);
-        base = databaseHelper.getWritableDatabase();
-        this.context = this;
-        dataLancamento = Recursos.getDataAtual();
-        preencherVariaveisEdit();
-        obterParametros();
-        carregarResumo();
+        this.base = databaseHelper.getWritableDatabase();
+        this.contaDAO = new ContaDAO(base);
+        this.carteiraDAO = new CarteiraDAO(base);
+        this.cartaoDAO = new CartaoDAO(base);
+        this.configuracoes = new Configuracoes(context);
+
+        preencherVariaveisCampos();
         configurarActionBar();
-        configurarCampoValor();
+        carregarContasSelecionadas();
+        configurarListView();
+        configurarTabs();
+        preencherTotal();
+        configurarBotoes();
+
+        if (savedInstanceState != null) {
+            this.abaSelecionada = savedInstanceState.getString(CONFIG_ABA_SELECIONADA);
+            TabHost abas = (TabHost) findViewById(android.R.id.tabhost);
+
+            if (abaSelecionada.equals(ABA_RESUMO_NOME))
+                abas.setCurrentTab(0);
+
+            if (abaSelecionada.equals(ABA_CONTA_NOME))
+                abas.setCurrentTab(1);
+
+            if (abaSelecionada.equals(ABA_CARTEIRA_NOME))
+                abas.setCurrentTab(2);
+
+            if (abaSelecionada.equals(ABA_CARTAO_NOME))
+                abas.setCurrentTab(3);
+        }
     }
 
-    private void preencherVariaveisEdit() {
-        this.editDescricao = (EditText) findViewById(R.id.edit_descricao_resumo);
-        this.editValor = (EditText) findViewById(R.id.edit_valor_resumo);
-        this.editDescricao.requestFocus();
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-        this.radioButtonCredito = (RadioButton) findViewById(R.id.radioButton_credito_resumo);
-        this.spinnerRepetir = (Spinner) findViewById(R.id.spinner_repetir_resumo);
-        this.spinnerRepetir.setAdapter(Recursos.adapterTextoRepetirLancamento(this));
-        this.textData = (TextView) findViewById(R.id.text_data_resumo);
-        textData.setText(Recursos.converterDataParaStringFormatoCurto(dataLancamento));
+    private void preencherVariaveisCampos() {
+        this.textTotal = (TextView) findViewById(R.id.activity_contas_total);
+        this.textTotalPrevisto = (TextView) findViewById(R.id.activity_contas_total_previsto);
 
-        textData.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Calendar dataAtual = Calendar.getInstance();
-                dataAtual.setTime(dataLancamento);
-                DatePickerDialog datePicker = new DatePickerDialog(context, new DatePickerDialog.OnDateSetListener() {
+        this.cardTotal = findViewById(R.id.activity_contas_card);
+        this.botaoAdicionar = findViewById(R.id.botao_adicionar);
+    }
 
-                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        Calendar novaData = Calendar.getInstance();
-                        novaData.set(year, monthOfYear, dayOfMonth);
-                        dataLancamento = novaData.getTime();
-                        textData.setText(Recursos.converterDataParaStringFormatoCurto(dataLancamento));
-                    }
-                },dataAtual.get(Calendar.YEAR), dataAtual.get(Calendar.MONTH), dataAtual.get(Calendar.DAY_OF_MONTH));
-
-                datePicker.show();
-            }
-        });
-
-        this.spinnerCategoria = (Spinner) findViewById(R.id.spinner_categoria_resumo);
-        spinnerCategoria.setAdapter(Recursos.adapterCategoria(context, base));
-        this.checkPrevisao = (CheckBox) findViewById(R.id.check_previsao_resumo);
+    @Override
+    protected void onSaveInstanceState (Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(CONFIG_ABA_SELECIONADA, abaSelecionada);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.padrao, menu);
+        getMenuInflater().inflate(R.menu.contas, menu);
+        this.menuData = menu.findItem(R.id.action_data);
+        menuData.setTitle(Recursos.dataAtualFormatoMesAno());
 
-        if (resumoIdSelecionado == 0) {
-            MenuItem item = menu.findItem(R.id.action_deletar);
-            item.setVisible(false);
-        }
+        //TODO: Remover após criar as configurações
+        MenuItem item = menu.findItem(R.id.action_settings);
+        item.setVisible(false);
+
+        item = menu.findItem(R.id.action_ordenacao_lancamentos);
+        item.setIcon(configuracoes.getOrdenacaoLancamentos() == 0 ? R.drawable.ic_sort_date_asc : R.drawable.ic_sort_date_desc);
+        item.setTitle(configuracoes.getOrdenacaoLancamentos() == 0 ? R.string.action_ordenar_lancamentos_asc : R.string.action_ordenar_lancamentos_desc);
 
         return true;
     }//onCreateOptionsMenu
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem menuItem) {
-        switch (menuItem.getItemId()) {
-            case android.R.id.home:
-                super.onBackPressed();
-                return true;
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
 
-            case R.id.action_salvar:
-                salvar();
-                return true;
+        if (id == R.id.action_settings) {
+            Intent intent = new Intent(ResumoActivity.this, ConfiguracaoActivity.class);
+            this.startActivity(intent);
 
-            case R.id.action_deletar:
-                deletar();
-                return true;
+            return true;
         }
-        return super.onOptionsItemSelected(menuItem);
+
+        if (id == R.id.action_data){
+            Calendar dataAtual = Calendar.getInstance();
+            dataAtual.setTime(Recursos.getDataAtual());
+            DatePickerDialog datePicker = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+
+                public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                    Calendar novaData = Calendar.getInstance();
+                    novaData.set(year, monthOfYear, dayOfMonth);
+                    Recursos.setDataAtual(novaData.getTime());
+                    menuData.setTitle(Recursos.dataAtualFormatoMesAno());
+                    atualizarContas();
+                }
+
+            },dataAtual.get(Calendar.YEAR), dataAtual.get(Calendar.MONTH), dataAtual.get(Calendar.DAY_OF_MONTH));
+
+            datePicker.show();
+            return true;
+        }
+
+        if (id == R.id.action_visao_totalizador){
+            CharSequence opcoes[] = new CharSequence[] {
+                    getString(R.string.text_visao_geral),
+                    getString(R.string.text_visao_geral_total),
+                    getString(R.string.text_visao_geral_previsao),
+                    getString(R.string.text_visao_mensal),
+                    getString(R.string.text_visao_mensal_total),
+                    getString(R.string.text_visao_mensal_previsao)};
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(getString(R.string.action_visao_totalizador));
+            builder.setSingleChoiceItems(opcoes, configuracoes.getModoVisualizacao(), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int itemSelecionado) {
+                    configuracoes.setModoVisualizacao(itemSelecionado);
+                    configuracoes.salvar();
+                    atualizarContas();
+                    dialog.dismiss();
+                }
+            });
+
+            builder.show();
+            return true;
+        }
+
+        if (id == R.id.action_ordenacao_lancamentos) {
+            configuracoes.setOrdenacaoLancamentos(configuracoes.getOrdenacaoLancamentos() == 0 ? 1 : 0);
+            configuracoes.salvar();
+            item.setIcon(configuracoes.getOrdenacaoLancamentos() == 0 ? R.drawable.ic_sort_date_asc : R.drawable.ic_sort_date_desc);
+            item.setTitle(configuracoes.getOrdenacaoLancamentos() == 0 ? R.string.action_ordenar_lancamentos_asc : R.string.action_ordenar_lancamentos_desc);
+
+            atualizarContas();
+
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }//onOptionsItemSelected
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK)
+                atualizarContas();
+            if (resultCode == RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }
+    }//onActivityResult
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        //Se for negativo quer dizer que é um totalizador, logo, não mostra o menu
+        if (posicaoItemSelecionado >= 0) {
+            menu.add(0, v.getId(), 0, R.string.text_deletar);
+
+            if ((abaSelecionada.equals(ABA_CONTA_NOME) && contaSelecionado.isPrevisao()) ||
+                (abaSelecionada.equals(ABA_CARTEIRA_NOME) && carteiraSelecionado.isPrevisao()))
+                menu.add(0, v.getId(), 0, R.string.text_efetivar);
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        if(item.getTitle()==getResources().getString(R.string.text_deletar)){
+            if (abaSelecionada.equals(ABA_CONTA_NOME)){
+                Recursos.confirmar(this, getResources().getString(R.string.msg_confirmar_exclusao), new Runnable() {
+                    @Override
+                    public void run() {
+                        contaDAO.deletar(contaSelecionado);
+                        atualizarContas();
+                        Toast.makeText(getApplicationContext(), R.string.msg_lancamento_excluido, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            if (abaSelecionada.equals(ABA_CARTEIRA_NOME)) {
+                Recursos.confirmar(this, getResources().getString(R.string.msg_confirmar_exclusao), new Runnable() {
+                    @Override
+                    public void run() {
+                        carteiraDAO.deletar(carteiraSelecionado);
+                        atualizarContas();
+                        Toast.makeText(getApplicationContext(), R.string.msg_lancamento_excluido, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            if (abaSelecionada.equals(ABA_CARTAO_NOME)){
+                Recursos.confirmar(this, getResources().getString(R.string.msg_confirmar_exclusao), new Runnable() {
+                    @Override
+                    public void run() {
+                        cartaoDAO.deletar(cartaoSelecionado);
+                        atualizarContas();
+                        Toast.makeText(getApplicationContext(), R.string.msg_lancamento_excluido, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }
+
+        if(item.getTitle()==getResources().getString(R.string.text_efetivar)){
+            if (abaSelecionada.equals(ABA_CONTA_NOME)){
+                Recursos.confirmar(this, getResources().getString(R.string.msg_confirmar_efetivar), new Runnable() {
+                    @Override
+                    public void run() {
+                        contaSelecionado.setPrevisao(false);
+                        contaDAO.atualizar(contaSelecionado);
+                        atualizarContas();
+                        Toast.makeText(getApplicationContext(), R.string.msg_lancamento_efetivado, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            if (abaSelecionada.equals(ABA_CARTEIRA_NOME)) {
+                Recursos.confirmar(this, getResources().getString(R.string.msg_confirmar_efetivar), new Runnable() {
+                    @Override
+                    public void run() {
+                        carteiraSelecionado.setPrevisao(false);
+                        carteiraDAO.atualizar(carteiraSelecionado);
+                        atualizarContas();
+                        Toast.makeText(getApplicationContext(), R.string.msg_lancamento_efetivado, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }
+
+        return true;
+    }
+
+    private void atualizarContas() {
+        carregarContasSelecionadas();
+        configurarListView();
+        preencherTotal();
+    }
+
+    private void carregarContasSelecionadas() {
+        contas = contaDAO.obterTodosNaDataAtual(configuracoes.getOrdenacaoLancamentos() == 1);
+        totalConta = contaDAO.obterTotalConta();
+        totalContaPrevisto = contaDAO.obterTotalContaPrevisto();
+        totalContaAnterior = contaDAO.obterTotalContaAnterior();
+        totalContaPrevistoAnterior = contaDAO.obterTotalContaPrevistoAnterior();
+
+        carteiras = carteiraDAO.obterTodosNaDataAtual(configuracoes.getOrdenacaoLancamentos() == 1);
+        totalCarteira = carteiraDAO.obterTotalCarteira();
+        totalCarteiraPrevisto = carteiraDAO.obterTotalCarteiraPrevisto();
+        totalCarteiraAnterior = carteiraDAO.obterTotalCarteiraAnterior();
+        totalCarteiraPrevistoAnterior = carteiraDAO.obterTotalCarteiraPrevistoAnterior();
+
+        cartaos = cartaoDAO.obterTodosNaDataAtual(configuracoes.getOrdenacaoLancamentos() == 1);
+        totalCartao = cartaoDAO.obterTotalCartao();
+
+        if (configuracoes.getModoVisualizacao() < 3) {
+            totalCarteira += totalCarteiraAnterior;
+            totalCarteiraPrevisto += totalCarteiraPrevistoAnterior;
+            totalConta += totalContaAnterior;
+            totalContaPrevisto += totalContaPrevistoAnterior;
+        }
+
+        Conta saldoContaAnterior = new Conta();
+        saldoContaAnterior.setId(-1);
+        saldoContaAnterior.setDescricao(this.getResources().getString(R.string.text_saldo_anterior));
+        saldoContaAnterior.setValor(totalContaAnterior);
+        saldoContaAnterior.setData(Recursos.dataAtualString());
+        contas.add(0, saldoContaAnterior);
+
+        Carteira saldoCarteiraAnterior = new Carteira();
+        saldoCarteiraAnterior.setId(-1);
+        saldoCarteiraAnterior.setDescricao(this.getResources().getString(R.string.text_saldo_anterior));
+        saldoCarteiraAnterior.setValor(totalCarteiraAnterior);
+        saldoCarteiraAnterior.setData(Recursos.dataAtualString());
+        carteiras.add(0, saldoCarteiraAnterior);
     }
 
     private void configurarActionBar() {
         ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle(R.string.app_title);
         actionBar.setIcon(R.mipmap.ic_launcher);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
     }
 
-    private void obterParametros() {
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null)
-          this.resumoIdSelecionado = bundle.getLong(PARAMETRO_RESUMO_ID);
-    }
+    private void configurarTabs() {
+        cardTotal.setVisibility(View.GONE);
+        botaoAdicionar.setVisibility(View.GONE);
 
-    private void carregarResumo() {
-        if (this.resumoIdSelecionado == 0)
-            resumo = new Resumo();
-        else{
-            ResumoDAO resumoDAO = new ResumoDAO(base);
-            resumo = resumoDAO.obterResumoOndeIdIgual(this.resumoIdSelecionado);
+        abaSelecionada = ABA_RESUMO_NOME;
+        LayoutInflater inflater = this.getLayoutInflater();
+        TabHost abas = (TabHost) findViewById(android.R.id.tabhost);
+        abas.setup();
+        TabHost.TabSpec aba;
 
-            if (resumo != null){
-                editDescricao.setText(resumo.getDescricao());
-                editValor.setText(Recursos.converterDoubleParaString(Math.abs(resumo.getValor())));
-                radioButtonCredito.setChecked(resumo.getValor() >= 0);
-                dataLancamento = Recursos.converterStringParaData(resumo.getData());
-                textData.setText(Recursos.converterDataParaStringFormatoCurto(dataLancamento));
-                spinnerCategoria.setSelection(((CategoriaSpinnerAdapter) spinnerCategoria.getAdapter()).getPositioById(resumo.getCategoria_id()));
-                checkPrevisao.setChecked(resumo.isPrevisao());
-            }
-        }
-    }
+        // Aba Resumo
+        View abaResumo = inflater.inflate(R.layout.view_aba, null);
+        TextView tituloResumo = (TextView)abaResumo.findViewById(R.id.view_aba_titulo);
+        tituloResumo.setBackgroundResource(R.drawable.ic_action_view_as_list);
+        tituloResumo.setPadding(0, 15, 0, 15);
 
-    private void configurarCampoValor() {
-        Recursos.configurarMascaraCasasDecimais(editValor);
-    }
+        aba = abas.newTabSpec(ABA_RESUMO_NOME);
+        aba.setContent(R.id.view_resumo);
+        aba.setIndicator(abaResumo);
+        abas.addTab(aba);
 
-    private void salvar(){
-        if (validarCampos()) {
-            int numeroParcelas = 1;
-            numeroParcelas += (int) spinnerRepetir.getSelectedItemId();
+        // Aba Conta
+        View abaConta = inflater.inflate(R.layout.view_aba, null);
+        TextView tituloConta = (TextView)abaConta.findViewById(R.id.view_aba_titulo);
+        tituloConta.setText(getString(R.string.list_view_conta));
 
-            Double valor = Double.valueOf(editValor.getText().toString());
+        aba = abas.newTabSpec(ABA_CONTA_NOME);
+        aba.setContent(R.id.list_view_conta);
+        aba.setIndicator(abaConta);
+        abas.addTab(aba);
 
-            if (!radioButtonCredito.isChecked())
-                valor = valor * -1;
+        // Aba Carteira
+        View abaCarteira = inflater.inflate(R.layout.view_aba, null);
+        TextView tituloCarteira = (TextView)abaCarteira.findViewById(R.id.view_aba_titulo);
+        tituloCarteira.setText(getString(R.string.list_view_carteira));
 
-            resumo.setDescricao(editDescricao.getText().toString() + (numeroParcelas == 1 ? "": " (1/" + String.valueOf(numeroParcelas) + ")"));
-            resumo.setValor(valor);
-            resumo.setData(Recursos.converterDataParaStringBD(dataLancamento));
-            resumo.setCategoria_id(((Categoria) spinnerCategoria.getSelectedItem()).getId());
-            resumo.setPrevisao(checkPrevisao.isChecked());
+        aba = abas.newTabSpec(ABA_CARTEIRA_NOME);
+        aba.setContent(R.id.list_view_carteira);
+        aba.setIndicator(abaCarteira);
+        abas.addTab(aba);
 
-            ResumoDAO resumoDAO = new ResumoDAO(base);
+        // Aba Cartao
+        View abaCartao = inflater.inflate(R.layout.view_aba, null);
+        TextView tituloCartao = (TextView)abaCartao.findViewById(R.id.view_aba_titulo);
+        tituloCartao.setText(getString(R.string.list_view_cartao));
 
-            if (resumoIdSelecionado > 0)
-                resumoDAO.atualizar(resumo);
-            else
-                resumoDAO.inserir(resumo);
+        aba = abas.newTabSpec(ABA_CARTAO_NOME);
+        aba.setContent(R.id.list_view_cartao);
+        aba.setIndicator(abaCartao);
+        abas.addTab(aba);
 
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(dataLancamento);
-
-            for (int i = 2; i <= numeroParcelas; i++) {
-                calendar.set(calendar.MONTH, calendar.get(calendar.MONTH)+ 1);
-                resumo = new Resumo();
-                resumo.setDescricao(editDescricao.getText().toString() + " (" + String.valueOf(i) + "/" + String.valueOf(numeroParcelas) + ")");
-                resumo.setValor(valor);
-                resumo.setData(Recursos.converterDataParaStringBD(calendar.getTime()));
-                resumo.setCategoria_id(((Categoria) spinnerCategoria.getSelectedItem()).getId());
-                resumo.setPrevisao(checkPrevisao.isChecked());
-
-                resumoDAO.inserir(resumo);
-            }
-
-            Intent returnIntent = new Intent();
-            setResult(RESULT_OK, returnIntent);
-            finish();
-
-            Toast.makeText(getApplicationContext(), R.string.msg_lancamento_efetuado, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    private void deletar(){
-        Recursos.confirmar(this, getResources().getString(R.string.msg_confirmar_exclusao), new Runnable() {
+        abas.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
-            public void run() {
-                ResumoDAO resumoDAO = new ResumoDAO(base);
-                resumoDAO.deletar(resumo);
+            public void onTabChanged(String tabId) {
+                abaSelecionada = tabId;
+                if (abaSelecionada.equals(ABA_RESUMO_NOME)) {
+                    cardTotal.setVisibility(View.GONE);
+                    botaoAdicionar.setVisibility(View.GONE);
+                } else {
+                    cardTotal.setVisibility(View.VISIBLE);
+                    botaoAdicionar.setVisibility(View.VISIBLE);
 
-                Intent returnIntent = new Intent();
-                setResult(RESULT_OK, returnIntent);
+                    preencherTotal();
+                }
 
-                finish();
+            }
+        });
 
-                Toast.makeText(getApplicationContext(), R.string.msg_lancamento_excluido, Toast.LENGTH_SHORT).show();
+        View layoutResumo = inflater.inflate(R.layout.view_resumo, null);
+        this.viewResumo = (LinearLayout) findViewById(R.id.view_resumo);
+        viewResumo.addView(layoutResumo);
+
+        this.resumoTotal = (TextView) findViewById(R.id.view_resumo_total);
+        this.resumoTotalPrevisto = (TextView) findViewById(R.id.view_resumo_total_previsto);
+        this.resumoTotalConta = (TextView) findViewById(R.id.view_resumo_total_conta);
+        this.resumoTotalContaPrevisto = (TextView) findViewById(R.id.view_resumo_total_conta_previsto);
+        this.resumoTotalCarteria = (TextView) findViewById(R.id.view_resumo_total_carteira);
+        this.resumoTotalCarteriaPrevisto = (TextView) findViewById(R.id.view_resumo_total_carteira_previsto);
+        this.resumoTotalCartao = (TextView) findViewById(R.id.view_resumo_total_cartao);
+    }
+
+    private void configurarListView() {
+        this.listViewConta = (ListView) findViewById(R.id.list_view_conta);
+        this.listViewConta.setAdapter(
+                new ContaListViewAdapter(this.context, this.contas));
+
+        registerForContextMenu(this.listViewConta);
+        this.listViewCarteira = (ListView) findViewById(R.id.list_view_carteira);
+        this.listViewCarteira.setAdapter(
+            new CarteiraListViewAdapter(this.context, this.carteiras));
+
+        this.listViewCartao = (ListView) findViewById(R.id.list_view_cartao);
+        this.listViewCartao.setAdapter(
+            new CartaoListViewAdapter(this.context, this.cartaos));
+
+        this.listViewConta.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ListAdapter adapter = ResumoActivity.this.listViewConta.getAdapter();
+                Conta conta = (Conta) adapter.getItem(position);
+
+                if (conta.getId() > 0) {
+                    Intent intent = new Intent(ResumoActivity.this, ContaActivity.class);
+                    intent.putExtra(ContaActivity.PARAMETRO_CONTA_ID, conta.getId());
+                    startActivityForResult(intent, 1);
+                } else {
+                    TabHost abas = (TabHost) findViewById(android.R.id.tabhost);
+                    abas.setCurrentTab(Integer.parseInt(String.valueOf(conta.getId() * -1)));
+                }
+            }
+        });
+
+        this.listViewCarteira.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ListAdapter adapter = ResumoActivity.this.listViewCarteira.getAdapter();
+                Carteira carteira = (Carteira) adapter.getItem(position);
+
+                if (carteira.getId() > 0) {
+                    Intent intent = new Intent(ResumoActivity.this, CarteiraActivity.class);
+                    intent.putExtra(CarteiraActivity.PARAMETRO_CARTEIRA_ID, carteira.getId());
+                    startActivityForResult(intent, 1);
+                }
+            }
+        });
+
+        this.listViewCartao.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ListAdapter adapter = ResumoActivity.this.listViewCartao.getAdapter();
+                Cartao cartao = (Cartao) adapter.getItem(position);
+
+                Intent intent = new Intent(ResumoActivity.this, CartaoActivity.class);
+                intent.putExtra(CartaoActivity.PARAMETRO_CARTAO_ID, cartao.getId());
+                startActivityForResult(intent, 1);
+            }
+        });
+
+        this.listViewConta.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+                ListAdapter adapter = ResumoActivity.this.listViewConta.getAdapter();
+                Conta conta = (Conta) adapter.getItem(position);
+
+                //negativo não mostra o context menu
+                if (conta.getId() < 0) {
+                    contaSelecionado = null;
+                    posicaoItemSelecionado = -1;
+                } else {
+                    contaSelecionado = (Conta) ResumoActivity.this.listViewConta.getAdapter().getItem(position);
+                    posicaoItemSelecionado = position;
+                }
+                return false;
+            }
+        });
+
+        this.listViewCarteira.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+                ListAdapter adapter = ResumoActivity.this.listViewCarteira.getAdapter();
+                Carteira carteira = (Carteira) adapter.getItem(position);
+
+                //negativo não mostra o context menu
+                if (carteira.getId() < 0) {
+                    carteiraSelecionado = null;
+                    posicaoItemSelecionado = -1;
+                }
+                else {
+                    carteiraSelecionado = (Carteira) ResumoActivity.this.listViewCarteira.getAdapter().getItem(position);
+                    posicaoItemSelecionado = position;
+                }
+                return false;
+            }
+        });
+
+        this.listViewCartao.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+                cartaoSelecionado = (Cartao) ResumoActivity.this.listViewCartao.getAdapter().getItem(position);
+                posicaoItemSelecionado = position;
+                return false;
+            }
+        });
+
+        registerForContextMenu(this.listViewConta);
+        registerForContextMenu(this.listViewCarteira);
+        registerForContextMenu(this.listViewCartao);
+    }
+
+    public void configurarBotoes(){
+        FloatingActionButton botaoAdicionar = (FloatingActionButton) findViewById(R.id.botao_adicionar);
+        botaoAdicionar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            Intent intent = null;
+
+            if (abaSelecionada.equals(ABA_CONTA_NOME))
+                intent = new Intent(v.getContext(), ContaActivity.class);
+
+            if (abaSelecionada.equals(ABA_CARTEIRA_NOME))
+                intent = new Intent(v.getContext(), CarteiraActivity.class);
+
+            if (abaSelecionada.equals(ABA_CARTAO_NOME))
+                intent = new Intent(v.getContext(), CartaoActivity.class);
+
+            if (intent != null)
+              startActivityForResult(intent, 1);
             }
         });
     }
 
-    private boolean validarCampos(){
-        boolean validou;
-        validou = Recursos.obrigatorio(this, editDescricao);
-        validou = validou && Recursos.obrigatorio(this, editValor);
-        return validou;
+    public void preencherTotal() {
+        String textMoeda = getResources().getString(R.string.text_moeda_para_formatacao);
+        String textoTotal = getResources().getString(R.string.text_total);
+        String textoTotalPrevisto = getResources().getString(R.string.text_total_previsao);
+
+        double total = 0;
+        double previsto = 0;
+
+        if (abaSelecionada.equals(ABA_CONTA_NOME)) {
+            total = totalConta;
+            previsto = totalContaPrevisto;
+        }
+
+        if (abaSelecionada.equals(ABA_CARTEIRA_NOME)) {
+            total = totalCarteira;
+            previsto = totalCarteiraPrevisto;
+        }
+
+        if (abaSelecionada.equals(ABA_CARTAO_NOME)){
+            total = totalCartao;
+        }
+
+        textTotal.setText(textoTotal + " " + String.format(textMoeda, total));
+        textTotal.setTypeface(null, Typeface.BOLD);
+
+        textTotalPrevisto.setText(textoTotalPrevisto + " " + String.format(textMoeda, previsto));
+        textTotalPrevisto.setTypeface(null, Typeface.BOLD);
+
+        textTotal.setTextColor(total < 0 ? getResources().getColor(R.color.theme_red_primary) : getResources().getColor(R.color.text_green));
+        textTotalPrevisto.setTextColor(previsto < 0 ? getResources().getColor(R.color.theme_red_primary) : getResources().getColor(R.color.text_green));
+
+        switch (configuracoes.getModoVisualizacao()){
+            case 1:
+            case 4:
+                textTotal.setVisibility(View.VISIBLE);
+                textTotalPrevisto.setVisibility(View.GONE);
+                break;
+            case 2:
+            case 5:
+                textTotal.setVisibility(View.GONE);
+                textTotalPrevisto.setVisibility(View.VISIBLE);
+                break;
+            default:
+                textTotal.setVisibility(View.VISIBLE);
+                textTotalPrevisto.setVisibility(View.VISIBLE);
+                break;
+        }
+
+        //Se for na aba cartão não tem totalizador de previsão
+        if (abaSelecionada.equals(ABA_CARTAO_NOME))
+            textTotalPrevisto.setVisibility(View.GONE);
+
+        this.resumoTotal.setText(textoTotal + " " + String.format(textMoeda, totalConta + totalCarteira));
+        this.resumoTotalPrevisto.setText(textoTotalPrevisto + " " + String.format(textMoeda, totalContaPrevisto + totalCarteiraPrevisto));
+        this.resumoTotalConta.setText(getString(R.string.text_conta) + " " + String.format(textMoeda, totalConta));
+        this.resumoTotalContaPrevisto.setText(getString(R.string.text_conta) + " " + String.format(textMoeda, totalContaPrevisto));
+        this.resumoTotalCarteria.setText(getString(R.string.text_carteira) + " "+ String.format(textMoeda, totalCarteira));
+        this.resumoTotalCarteriaPrevisto.setText(getString(R.string.text_carteira) + " " + String.format(textMoeda, totalCarteiraPrevisto));
+        this.resumoTotalCartao.setText(getString(R.string.text_cartao) + " " + String.format(textMoeda, totalCartao));
+
+        resumoTotal.setTextColor(totalConta + totalCarteira < 0 ? getResources().getColor(R.color.theme_red_primary) : getResources().getColor(R.color.text_green));
+        resumoTotalPrevisto.setTextColor(totalContaPrevisto + totalCarteiraPrevisto < 0 ? getResources().getColor(R.color.theme_red_primary) : getResources().getColor(R.color.text_green));
+        resumoTotalConta.setTextColor(totalConta < 0 ? getResources().getColor(R.color.theme_red_primary) : getResources().getColor(R.color.text_green));
+        resumoTotalContaPrevisto.setTextColor(totalContaPrevisto < 0 ? getResources().getColor(R.color.theme_red_primary) : getResources().getColor(R.color.text_green));
+        resumoTotalCarteria.setTextColor(totalCarteira < 0 ? getResources().getColor(R.color.theme_red_primary) : getResources().getColor(R.color.text_green));
+        resumoTotalCarteriaPrevisto.setTextColor(totalCarteiraPrevisto < 0 ? getResources().getColor(R.color.theme_red_primary) : getResources().getColor(R.color.text_green));
     }
 }
